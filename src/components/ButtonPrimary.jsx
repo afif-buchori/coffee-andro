@@ -3,7 +3,7 @@ import React from 'react';
 
 const ButtonPrimary = props => {
   return (
-    <TouchableOpacity style={styles.btnPrimary}>
+    <TouchableOpacity style={styles.btnPrimary} onPress={props.handleNavigate}>
       <Text style={styles.btnText}>{props.title}</Text>
     </TouchableOpacity>
   );
