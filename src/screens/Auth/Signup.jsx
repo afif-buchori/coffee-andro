@@ -15,14 +15,17 @@ const Signup = () => {
           <TextInput
             style={authStyle.inputAuth}
             placeholder="Enter your email address"
+            placeholderTextColor={'white'}
           />
           <TextInput
             style={authStyle.inputAuth}
             placeholder="Enter your password"
+            placeholderTextColor={'white'}
           />
           <TextInput
             style={authStyle.inputAuth}
             placeholder="Enter your phone number"
+            placeholderTextColor={'white'}
           />
         </View>
         <View style={authStyle.btnContainer}>

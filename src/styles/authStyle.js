@@ -40,6 +40,7 @@ const authStyle = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     gap: 16,
+    marginTop: 16,
   },
 });
 

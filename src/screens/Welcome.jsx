@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
   homeText: {
     marginTop: 110,
     fontSize: 65,
-    fontWeight: 700,
+    // fontWeight: 700,
+    fontFamily: 'Poppins-Bold',
     textAlign: 'center',
     color: 'white',
   },
