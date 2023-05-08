@@ -3,7 +3,7 @@ import React from 'react';
 
 const ButtonGoogle = props => {
   return (
-    <TouchableOpacity style={styles.btnWhite}>
+    <TouchableOpacity style={styles.btnWhite} onPress={props.handlePress}>
       <View style={styles.innerBtn}>
         <Image
           style={{width: 28, height: 26}}
@@ -17,7 +17,7 @@ const ButtonGoogle = props => {
 
 const styles = {
   btnWhite: {
-    width: '90%',
+    width: '100%',
     paddingTop: 20,
     paddingBottom: 20,
     borderRadius: 16,

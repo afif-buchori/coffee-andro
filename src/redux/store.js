@@ -3,15 +3,15 @@ import {configureStore} from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
-  PERSIST,
   FLUSH,
   REHYDRATE,
   PAUSE,
-  REGISTER,
+  PERSIST,
   PURGE,
+  REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {combineReducers} from 'redux';
 
 import reducer from './slices';
 
@@ -23,13 +23,16 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducer);
 
+const rootReducer = combineReducers({
+  persistedReducer,
+});
+
 const store = configureStore({
-  reducer: persistedReducer,
-  middleware: defaultMiddleware => {
-    return defaultMiddleware({
-      thunk: false,
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware => {
+    return getDefaultMiddleware({
       serializableCheck: {
-        ignoreActions: [PERSIST, FLUSH, REHYDRATE, PAUSE, REGISTER, PURGE],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     });
   },

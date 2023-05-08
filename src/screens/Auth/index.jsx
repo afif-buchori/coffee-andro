@@ -21,11 +21,11 @@ const Auth = () => {
         <View style={authStyle.btnContainer}>
           <ButtonSecondary
             title="Create New Account"
-            handleNavigate={() => navigation.navigate('Signup')}
+            handlePress={() => navigation.navigate('Signup')}
           />
           <ButtonPrimary
             title="Login"
-            handleNavigate={() => navigation.navigate('Login')}
+            handlePress={() => navigation.navigate('Login')}
           />
         </View>
       </View>

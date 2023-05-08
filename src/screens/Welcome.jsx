@@ -11,10 +11,12 @@ const Welcome = () => {
       style={styles.bgHome}>
       <View style={styles.mainHome}>
         <Text style={styles.homeText}>Coffee for Everyone</Text>
-        <ButtonPrimary
-          title="Get Started"
-          handleNavigate={() => navigation.navigate('Auth')}
-        />
+        <View style={{width: '90%'}}>
+          <ButtonPrimary
+            title="Get Started"
+            handlePress={() => navigation.navigate('Auth')}
+          />
+        </View>
       </View>
     </ImageBackground>
   );

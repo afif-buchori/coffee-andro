@@ -3,9 +3,7 @@ import React from 'react';
 
 const ButtonSecondary = props => {
   return (
-    <TouchableOpacity
-      style={styles.btnSecondary}
-      onPress={props.handleNavigate}>
+    <TouchableOpacity style={styles.btnSecondary} onPress={props.handlePress}>
       <Text style={styles.btnText}>{props.title}</Text>
     </TouchableOpacity>
   );
@@ -13,7 +11,7 @@ const ButtonSecondary = props => {
 
 const styles = {
   btnSecondary: {
-    width: '90%',
+    width: '100%',
     paddingTop: 20,
     paddingBottom: 20,
     borderRadius: 16,

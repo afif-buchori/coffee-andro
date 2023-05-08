@@ -15,15 +15,27 @@ import {useNavigation} from '@react-navigation/native';
 import {fetchLogin} from '../../utils/https/auth';
 import {useDispatch} from 'react-redux';
 import {userAction} from '../../redux/slices/auth';
+import ToastFetching from '../../components/ToastFetching';
+import BtnLoadingPrim from '../../components/BtnLoadingPrim';
 
 const Login = () => {
   const dispatch = useDispatch();
   const controller = useMemo(() => new AbortController(), []);
   const navigation = useNavigation();
+  const [isLoading, setLoading] = useState(false);
+  const [isToast, setToast] = useState(false);
+  const [toastInfo, setToastInfo] = useState({});
   const [formEmail, setFormEmail] = useState('');
   const [formPass, setFormPass] = useState('');
 
   const handleSubmit = async () => {
+    if (formEmail === '' || formPass === '') {
+      setToast(true);
+      setToastInfo({msg: 'Input Empty', display: 'error'});
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     console.log(formEmail, formPass);
     const form = {email: formEmail, password: formPass};
     try {
@@ -31,8 +43,15 @@ const Login = () => {
       console.log(result);
       dispatch(userAction.authLogin(result.data));
       navigation.navigate('Home');
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      if (error.response && error.response.status === 401) {
+        console.log(error.response.data);
+        setToast(true);
+        setToastInfo({msg: error.response.data.msg, display: 'error'});
+      }
+      setLoading(false);
     }
   };
 
@@ -40,6 +59,11 @@ const Login = () => {
     <ImageBackground
       source={require('../../assets/images/bg-login.png')}
       style={authStyle.bgAuth}>
+      <ToastFetching
+        isShow={isToast}
+        onClose={() => setToast(false)}
+        info={toastInfo}
+      />
       <View style={authStyle.mainAuth}>
         <Text style={authStyle.authTitle}>Login</Text>
         <View style={{width: '100%', paddingHorizontal: '5%', gap: 20}}>
@@ -57,18 +81,25 @@ const Login = () => {
             placeholder="Enter your password"
             placeholderTextColor={'white'}
           />
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Forgot')}>
             <Text style={styles.forgotText}>Forgot password?</Text>
           </Pressable>
         </View>
         <View style={authStyle.btnContainer}>
-          <ButtonPrimary title="Login" handleNavigate={handleSubmit} />
+          {isLoading ? (
+            <BtnLoadingPrim />
+          ) : (
+            <ButtonPrimary title="Login" handlePress={handleSubmit} />
+          )}
           <View style={styles.lineContainer}>
             <View style={styles.line}></View>
             <Text>or Login in with</Text>
             <View style={styles.line}></View>
           </View>
-          <ButtonGoogle title="Login with Google" />
+          <ButtonGoogle
+            title="Login with Google"
+            handlePress={() => navigation.navigate('Drawer')}
+          />
         </View>
       </View>
     </ImageBackground>

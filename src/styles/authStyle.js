@@ -36,7 +36,7 @@ const authStyle = StyleSheet.create({
     fontWeight: 'bold',
   },
   btnContainer: {
-    width: '100%',
+    width: '90%',
     display: 'flex',
     alignItems: 'center',
     gap: 16,
