@@ -78,6 +78,7 @@ const Login = () => {
             style={authStyle.inputAuth}
             value={formPass}
             onChangeText={text => setFormPass(text)}
+            secureTextEntry={true}
             placeholder="Enter your password"
             placeholderTextColor={'white'}
           />

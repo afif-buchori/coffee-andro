@@ -2,7 +2,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import React, {useEffect} from 'react';
 
 const ToastFetching = ({isShow, onClose, info}) => {
-  const backgroundColor = info.display === 'error' ? '#FECACA' : '#BAE6FD';
+  const backgroundColor = info.display === 'error' ? '#FECACA' : '#BBF7D0';
 
   useEffect(() => {
     let timeout;

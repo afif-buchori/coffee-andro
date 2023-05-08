@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useRoute} from '@react-navigation/native';
 import {getProductsDetails} from '../../utils/https/product';
@@ -11,12 +11,13 @@ const ProductDetails = () => {
   const controller = useMemo(() => new AbortController(), []);
   const [isLoading, setLoading] = useState(true);
   const [dataProd, setDataProd] = useState({});
+  const [size, setSize] = useState(0);
 
   const fetching = async () => {
     setLoading(true);
     try {
       const result = await getProductsDetails(id, controller);
-      console.log(result);
+      // console.log(result);
       setDataProd(result.data.data);
       setLoading(false);
     } catch (error) {
@@ -27,7 +28,7 @@ const ProductDetails = () => {
   useEffect(() => {
     fetching();
   }, []);
-  console.log(dataProd);
+  // console.log(dataProd);
   return (
     <>
       {isLoading ? (
@@ -62,7 +63,35 @@ const ProductDetails = () => {
               48 hours.
             </Text>
           </View>
-          <ButtonSecondary title="Add to cart" />
+          <Text style={{fontFamily: 'Poppins-Bold', fontSize: 20}}>
+            Choose Size
+          </Text>
+          <View style={{flexDirection: 'row', gap: 20}}>
+            <Pressable
+              onPress={() => setSize(1)}
+              style={size === 1 ? styles.selectedSize : styles.selectSize}>
+              <Text style={size === 1 ? styles.sizedTitle : styles.sizeTitle}>
+                R
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setSize(2)}
+              style={size === 2 ? styles.selectedSize : styles.selectSize}>
+              <Text style={size === 2 ? styles.sizedTitle : styles.sizeTitle}>
+                L
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setSize(3)}
+              style={size === 3 ? styles.selectedSize : styles.selectSize}>
+              <Text style={size === 3 ? styles.sizedTitle : styles.sizeTitle}>
+                XL
+              </Text>
+            </Pressable>
+          </View>
+          <View style={{marginTop: 'auto', width: '100%'}}>
+            <ButtonSecondary title="Add to cart" />
+          </View>
         </View>
       )}
     </>
@@ -74,10 +103,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: '10%',
+    paddingVertical: 16,
   },
   imageProd: {
-    width: 241,
-    height: 241,
+    width: 200,
+    height: 200,
     borderRadius: 200,
     resizeMode: 'cover',
   },
@@ -98,6 +128,38 @@ const styles = StyleSheet.create({
   containerDesc: {
     width: '100%',
     paddingTop: 20,
+  },
+  selectSize: {
+    width: 50,
+    height: 50,
+    paddingTop: 4,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFBA33',
+  },
+  selectedSize: {
+    width: 50,
+    height: 50,
+    paddingTop: 4,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#6A4029',
+  },
+  sizeTitle: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'Poppins-ExtraBold',
+    color: 'black',
+  },
+  sizedTitle: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontFamily: 'Poppins-ExtraBold',
+    color: '#FFBA33',
   },
 });
 

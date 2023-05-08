@@ -1,6 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {Pressable, View, Text} from 'react-native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
@@ -16,17 +19,46 @@ import Forgot from './src/screens/Auth/Forgot';
 import ProductDetails from './src/screens/Product/ProductDetails';
 import Profile from './src/screens/Profile';
 
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 const DrawerNavigator = () => {
+  const navigation = useNavigation();
   const {Navigator, Screen} = createDrawerNavigator();
   return (
     <Navigator initialRouteName="Home">
-      <Screen name="Home" component={Home} />
-      <Screen name="Profile" component={Profile} />
+      <Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerShown: true,
+          drawerIcon: ({color}) => (
+            <Ionicons name="home-outline" size={22} color={color} />
+          ),
+          headerRight: () => (
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              <View style={{marginRight: '8%'}}>
+                <Ionicons name="cart-outline" size={24} />
+              </View>
+            </Pressable>
+          ),
+        }}
+      />
+      <Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerShown: true,
+          drawerIcon: ({color}) => (
+            <Ionicons name="person-circle-outline" size={24} color={color} />
+          ),
+        }}
+      />
     </Navigator>
   );
 };
 
 const StackNavigator = () => {
+  const navigation = useNavigation();
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -40,9 +72,26 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Detail"
         component={ProductDetails}
-        options={({route}) => ({
-          title: `Detail: ${route.params.id}`,
-        })}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
+
+          headerRight: () => (
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              <View style={{marginRight: '10%'}}>
+                <Ionicons name="cart-outline" size={24} />
+              </View>
+            </Pressable>
+          ),
+        }}
+        // options={({route}) => ({
+        //   title: `Detail: ${route.params.id}`,
+        //   headerShown: true,
+        // })}
       />
     </Stack.Navigator>
   );

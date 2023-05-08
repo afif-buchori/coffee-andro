@@ -33,7 +33,7 @@ const Home = () => {
     const params = {limit, page, category, search: searchInput, sort};
     try {
       const result = await getProducts(params, controller);
-      console.log(result.data.data);
+      // console.log(result.data.data);
       setDataProduct(result.data.data);
       setNoData(false);
       setLoading(false);

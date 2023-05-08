@@ -13,6 +13,7 @@ const Signup = () => {
   const controller = useMemo(() => new AbortController(), []);
   const navigation = useNavigation();
   const [isLoading, setLoading] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
   const [isToast, setToast] = useState(false);
   const [toastInfo, setToastInfo] = useState({});
   const [formEmail, setFormEmail] = useState('');
@@ -30,6 +31,9 @@ const Signup = () => {
     try {
       const result = await register(formEmail, formPass, formPhone, controller);
       console.log(result);
+      setToast(true);
+      setToastInfo({msg: 'Register Success', display: 'success'});
+      setSuccess(true);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -63,6 +67,7 @@ const Signup = () => {
             style={authStyle.inputAuth}
             value={formPass}
             onChangeText={text => setFormPass(text)}
+            secureTextEntry={true}
             placeholder="Enter your password"
             placeholderTextColor={'white'}
           />
@@ -78,6 +83,11 @@ const Signup = () => {
         <View style={authStyle.btnContainer}>
           {isLoading ? (
             <BtnLoadingSec />
+          ) : isSuccess ? (
+            <ButtonSecondary
+              title="Go Login"
+              handlePress={() => navigation.navigate('Login')}
+            />
           ) : (
             <ButtonSecondary
               title="Create Account"

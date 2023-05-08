@@ -23,12 +23,12 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducer);
 
-const rootReducer = combineReducers({
-  persistedReducer,
-});
+// const rootReducer = combineReducers({
+//   persistedReducer,
+// });
 
 const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: getDefaultMiddleware => {
     return getDefaultMiddleware({
       serializableCheck: {
