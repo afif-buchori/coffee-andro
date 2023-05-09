@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {Pressable, View, Text} from 'react-native';
+import {Pressable, View} from 'react-native';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -20,6 +20,10 @@ import ProductDetails from './src/screens/Product/ProductDetails';
 import Profile from './src/screens/Profile';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Cart from './src/screens/transaction/Cart';
+import Products from './src/screens/Product';
+import Delivery from './src/screens/transaction/Delivery';
+import Logout from './src/screens/Auth/Logout';
 
 const DrawerNavigator = () => {
   const navigation = useNavigation();
@@ -35,7 +39,7 @@ const DrawerNavigator = () => {
             <Ionicons name="home-outline" size={22} color={color} />
           ),
           headerRight: () => (
-            <Pressable onPress={() => navigation.navigate('Login')}>
+            <Pressable onPress={() => navigation.navigate('Cart')}>
               <View style={{marginRight: '8%'}}>
                 <Ionicons name="cart-outline" size={24} />
               </View>
@@ -53,6 +57,38 @@ const DrawerNavigator = () => {
           ),
         }}
       />
+      <Screen
+        name="Cart"
+        component={Cart}
+        options={{
+          headerShown: true,
+          drawerIcon: ({color}) => (
+            <Ionicons name="cart-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Screen
+        name="Products"
+        component={Products}
+        options={{
+          title: 'All Products',
+          headerShown: true,
+          drawerIcon: ({color}) => (
+            <Ionicons name="grid-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Screen
+        name="Logout"
+        component={Logout}
+        options={{
+          title: 'Sign-Out',
+          headerShown: false,
+          drawerIcon: ({color}) => (
+            <Ionicons name="arrow-forward-outline" size={24} color={color} />
+          ),
+        }}
+      />
     </Navigator>
   );
 };
@@ -67,7 +103,19 @@ const StackNavigator = () => {
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Forgot" component={Forgot} />
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen
+        name="Products"
+        component={Products}
+        options={{
+          title: 'All Products',
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Delivery"
+        component={Delivery}
+        options={{headerShown: true}}
+      />
       <Stack.Screen name="Drawer" component={DrawerNavigator} />
       <Stack.Screen
         name="Detail"
@@ -81,7 +129,7 @@ const StackNavigator = () => {
           headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
 
           headerRight: () => (
-            <Pressable onPress={() => navigation.navigate('Login')}>
+            <Pressable onPress={() => navigation.navigate('Cart')}>
               <View style={{marginRight: '10%'}}>
                 <Ionicons name="cart-outline" size={24} />
               </View>

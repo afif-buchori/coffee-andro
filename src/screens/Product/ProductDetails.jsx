@@ -1,13 +1,23 @@
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useRoute} from '@react-navigation/native';
 import {getProductsDetails} from '../../utils/https/product';
 import LoaderScreen from '../../components/LoaderScreen';
 import ButtonSecondary from '../../components/ButtonSecondary';
+import {useDispatch} from 'react-redux';
+import {cartAction} from '../../redux/slices/cart';
 
 const ProductDetails = () => {
   const route = useRoute();
   const {id} = route.params;
+  const dispatch = useDispatch();
   const controller = useMemo(() => new AbortController(), []);
   const [isLoading, setLoading] = useState(true);
   const [dataProd, setDataProd] = useState({});
@@ -29,70 +39,87 @@ const ProductDetails = () => {
     fetching();
   }, []);
   // console.log(dataProd);
+
+  const handleAddToCart = () => {
+    const cart = {
+      product_id: id,
+      prodName: dataProd.prod_name,
+      image: dataProd.image || '',
+      size_id: size || 1,
+      qty: 1,
+      price: dataProd.price,
+    };
+    dispatch(cartAction.addtoCart(cart));
+  };
   return (
     <>
       {isLoading ? (
         <LoaderScreen />
       ) : (
-        <View style={styles.container}>
-          {dataProd.image ? (
-            <Image source={{uri: dataProd.image}} style={styles.imageProd} />
-          ) : (
-            <Image
-              style={styles.imageProd}
-              source={require('../../assets/images/ph-product.png')}
-            />
-          )}
-          <Text style={styles.titleProd}>{dataProd.prod_name}</Text>
-          <Text style={styles.textPrice}>
-            IDR {dataProd.price.toLocaleString('id-ID')}
-          </Text>
+        <ScrollView>
+          <View style={styles.container}>
+            {dataProd.image ? (
+              <Image source={{uri: dataProd.image}} style={styles.imageProd} />
+            ) : (
+              <Image
+                style={styles.imageProd}
+                source={require('../../assets/images/ph-product.png')}
+              />
+            )}
+            <Text style={styles.titleProd}>{dataProd.prod_name}</Text>
+            <Text style={styles.textPrice}>
+              IDR {dataProd.price.toLocaleString('id-ID')}
+            </Text>
 
-          <View style={styles.containerDesc}>
-            <Text style={styles.textTitle}>Delivery Info</Text>
-            <Text style={{color: 'black'}}>
-              Delivered only on monday until friday from 1 pm to 7 pm
+            <View style={styles.containerDesc}>
+              <Text style={styles.textTitle}>Delivery Info</Text>
+              <Text style={{color: 'black'}}>
+                Delivered only on monday until friday from 1 pm to 7 pm
+              </Text>
+            </View>
+            <View style={styles.containerDesc}>
+              <Text style={styles.textTitle}>Description</Text>
+              <Text style={{color: 'black'}}>
+                Cold brewing is a method of brewing that combines ground coffee
+                and cool water and uses time instead of heat to extract the
+                flavor. It is brewed in small batches and steeped for as long as
+                48 hours.
+              </Text>
+            </View>
+            <Text style={{fontFamily: 'Poppins-Bold', fontSize: 20}}>
+              Choose Size
             </Text>
+            <View style={{flexDirection: 'row', gap: 20}}>
+              <Pressable
+                onPress={() => setSize(1)}
+                style={size === 1 ? styles.selectedSize : styles.selectSize}>
+                <Text style={size === 1 ? styles.sizedTitle : styles.sizeTitle}>
+                  R
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setSize(2)}
+                style={size === 2 ? styles.selectedSize : styles.selectSize}>
+                <Text style={size === 2 ? styles.sizedTitle : styles.sizeTitle}>
+                  L
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setSize(3)}
+                style={size === 3 ? styles.selectedSize : styles.selectSize}>
+                <Text style={size === 3 ? styles.sizedTitle : styles.sizeTitle}>
+                  XL
+                </Text>
+              </Pressable>
+            </View>
+            <View style={{marginTop: 20, width: '100%'}}>
+              <ButtonSecondary
+                title="Add to cart"
+                handlePress={handleAddToCart}
+              />
+            </View>
           </View>
-          <View style={styles.containerDesc}>
-            <Text style={styles.textTitle}>Description</Text>
-            <Text style={{color: 'black'}}>
-              Cold brewing is a method of brewing that combines ground coffee
-              and cool water and uses time instead of heat to extract the
-              flavor. It is brewed in small batches and steeped for as long as
-              48 hours.
-            </Text>
-          </View>
-          <Text style={{fontFamily: 'Poppins-Bold', fontSize: 20}}>
-            Choose Size
-          </Text>
-          <View style={{flexDirection: 'row', gap: 20}}>
-            <Pressable
-              onPress={() => setSize(1)}
-              style={size === 1 ? styles.selectedSize : styles.selectSize}>
-              <Text style={size === 1 ? styles.sizedTitle : styles.sizeTitle}>
-                R
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => setSize(2)}
-              style={size === 2 ? styles.selectedSize : styles.selectSize}>
-              <Text style={size === 2 ? styles.sizedTitle : styles.sizeTitle}>
-                L
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => setSize(3)}
-              style={size === 3 ? styles.selectedSize : styles.selectSize}>
-              <Text style={size === 3 ? styles.sizedTitle : styles.sizeTitle}>
-                XL
-              </Text>
-            </Pressable>
-          </View>
-          <View style={{marginTop: 'auto', width: '100%'}}>
-            <ButtonSecondary title="Add to cart" />
-          </View>
-        </View>
+        </ScrollView>
       )}
     </>
   );
@@ -115,6 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'Poppins-ExtraBold',
     color: 'black',
+    textAlign: 'center',
   },
   textPrice: {
     fontSize: 22,

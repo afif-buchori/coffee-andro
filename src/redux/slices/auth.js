@@ -28,6 +28,9 @@ const userSlice = createSlice({
         phone: action.payload.dataUser.phone,
       };
     },
+    authLogout: () => {
+      return initialState;
+    },
   },
 });
 

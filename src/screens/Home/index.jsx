@@ -24,7 +24,7 @@ const Home = () => {
   const [isLoading, setLoading] = useState(true);
   const [noData, setNoData] = useState(false);
   const [category, setCategory] = useState('');
-  const [limit, setLimit] = useState('');
+  const [limit, setLimit] = useState(4);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState('');
 
@@ -80,10 +80,13 @@ const Home = () => {
                 placeholder="Search"
                 onChangeText={handleSearch}
                 placeholderTextColor={'black'}
+                onFocus={() =>
+                  navigation.navigate('Products', {category, search: true})
+                }
               />
             </View>
 
-            <Box alignItems="flex-end">
+            {/* <Box alignItems="flex-end">
               <Menu
                 w="190"
                 trigger={triggerProps => {
@@ -103,7 +106,7 @@ const Home = () => {
                   priciest
                 </Menu.Item>
               </Menu>
-            </Box>
+            </Box> */}
           </View>
 
           <ScrollView>
@@ -168,9 +171,7 @@ const Home = () => {
         ) : (
           <View>
             <Pressable
-              onPress={() => {
-                console.log('TESTSFDSFSFD');
-              }}>
+              onPress={() => navigation.navigate('Products', {category})}>
               <Text
                 style={{
                   color: '#6A4029',
