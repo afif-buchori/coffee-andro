@@ -9,7 +9,14 @@ const Cart = () => {
   const navigation = useNavigation();
   const cartRedux = useSelector(state => state.cart);
   const {shoppingCart} = cartRedux;
-  console.log(shoppingCart);
+  // console.log(shoppingCart);
+
+  let subtotal = 0;
+  shoppingCart.forEach(item => {
+    subtotal += item.price * item.qty;
+  });
+  const taxFee = subtotal * 0.1;
+  const total = subtotal + taxFee;
 
   return (
     <View style={styles.screen}>
@@ -28,24 +35,30 @@ const Cart = () => {
       <View style={{gap: 8, paddingVertical: 14, paddingHorizontal: 6}}>
         <View style={styles.infoPayment}>
           <Text style={styles.textInfo}>Item Total</Text>
-          <Text style={styles.textPayment}>IDR 150.000</Text>
+          <Text style={styles.textPayment}>
+            IDR {subtotal.toLocaleString('id-ID')}
+          </Text>
         </View>
         <View style={styles.infoPayment}>
           <Text style={styles.textInfo}>Delivery Charge</Text>
-          <Text style={styles.textPayment}>IDR 0.000</Text>
+          <Text style={styles.textPayment}>IDR 0</Text>
         </View>
         <View style={styles.infoPayment}>
           <Text style={styles.textInfo}>Tax</Text>
-          <Text style={styles.textPayment}>IDR 10.000</Text>
+          <Text style={styles.textPayment}>
+            IDR {taxFee.toLocaleString('id-ID')}
+          </Text>
         </View>
         <View style={[styles.infoPayment, {marginTop: 16}]}>
           <Text style={styles.textTotal}>Total : </Text>
-          <Text style={styles.textTotal}>IDR 160.000</Text>
+          <Text style={styles.textTotal}>
+            IDR {total.toLocaleString('id-ID')}
+          </Text>
         </View>
       </View>
       <ButtonPrimary
         title="&#10095;  CHECKOUT"
-        handlePress={() => navigation.navigate('Delivery')}
+        handlePress={() => navigation.navigate('Delivery', {total})}
       />
     </View>
   );

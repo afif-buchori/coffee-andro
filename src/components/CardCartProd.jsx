@@ -25,7 +25,9 @@ const CardCartProd = ({data}) => {
             style={styles.imageProd}
           />
         )}
-        <Text style={styles.textPrice}>IDR {data.price}</Text>
+        <Text style={styles.textPrice}>
+          IDR {data.price.toLocaleString('id-ID')}
+        </Text>
       </View>
       <View style={{gap: 16, width: '100%'}}>
         <Text style={styles.titleProd}>{data.prodName}</Text>

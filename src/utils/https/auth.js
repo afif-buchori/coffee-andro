@@ -19,3 +19,8 @@ export const forgotEmail = (email, controller) => {
   const url = `${baseUrl}/auth/forgot`;
   return axios.patch(url, {email}, {signal: controller.signal});
 };
+
+export const getProfile = (id, controller) => {
+  const url = `${baseUrl}/users/${id}`;
+  return axios.get(url, {signal: controller.signal});
+};

@@ -1,14 +1,31 @@
 import {View, ScrollView, Text, Pressable, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {NativeBaseProvider, Radio} from 'native-base';
 import ButtonSecondary from '../../components/ButtonSecondary';
+import globalStyle from '../../styles/globalStyle';
+import {useDispatch} from 'react-redux';
+import {cartAction} from '../../redux/slices/cart';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 const Delivery = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const route = useRoute();
+  // console.log(route.params.total);
+  const [deliveryMethod, setDeliveryMethod] = useState(3);
+
+  const onChangeDelivery = value => {
+    setDeliveryMethod(value);
+  };
+  const handleConfirm = () => {
+    dispatch(cartAction.deliveryMethod(deliveryMethod));
+    navigation.navigate('Payment', {subtotal: route.params.total});
+  };
   return (
     <NativeBaseProvider>
       <ScrollView>
         <View style={styles.screen}>
-          <Text style={styles.titleScreen}>Delivery</Text>
+          <Text style={globalStyle.titleScreen}>Delivery</Text>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text style={styles.titleContent}>Address details</Text>
             <Pressable>
@@ -17,11 +34,11 @@ const Delivery = () => {
           </View>
           <View style={styles.content}>
             <Text style={styles.textAddress}>Iskandar Streets</Text>
-            <View style={styles.lineStyle}></View>
+            <View style={globalStyle.lineStyle}></View>
             <Text style={styles.textDesc}>
               Km 5 refinery road oppsite republic road, effurun, Jakarta
             </Text>
-            <View style={styles.lineStyle}></View>
+            <View style={globalStyle.lineStyle}></View>
             <Text style={styles.textDesc}>082211338805</Text>
           </View>
           <Text style={[styles.titleContent, {marginTop: 16}]}>
@@ -30,18 +47,22 @@ const Delivery = () => {
 
           <View style={styles.content}>
             <Radio.Group
-              defaultValue="1"
+              // defaultValue="3"
+              value={deliveryMethod}
+              onChange={onChangeDelivery}
               name="delivery"
               // accessibilityLabel="select prize"
             >
               <Radio value="1" my={1} colorScheme="warning">
                 Door delivery
               </Radio>
-              <View style={[styles.lineStyle, {marginVertical: 12}]}></View>
+              <View
+                style={[globalStyle.lineStyle, {marginVertical: 12}]}></View>
               <Radio value="2" my={1} colorScheme="warning">
                 Pick up at store
               </Radio>
-              <View style={[styles.lineStyle, {marginVertical: 12}]}></View>
+              <View
+                style={[globalStyle.lineStyle, {marginVertical: 12}]}></View>
               <Radio value="3" my={1} colorScheme="warning">
                 Dine in
               </Radio>
@@ -56,9 +77,14 @@ const Delivery = () => {
               marginTop: 16,
             }}>
             <Text style={styles.textTotal}>Total</Text>
-            <Text style={styles.textPrice}>IDR 123405</Text>
+            <Text style={styles.textPrice}>
+              IDR {route.params.total.toLocaleString('id-ID')}
+            </Text>
           </View>
-          <ButtonSecondary title="Confirm and Pay" />
+          <ButtonSecondary
+            title="Confirm and Pay"
+            handlePress={handleConfirm}
+          />
         </View>
       </ScrollView>
     </NativeBaseProvider>
@@ -71,11 +97,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: '10%',
     paddingVertical: 16,
     gap: 10,
-  },
-  titleScreen: {
-    fontSize: 34,
-    fontFamily: 'Poppins-ExtraBold',
-    color: 'black',
   },
   titleContent: {
     fontFamily: 'Poppins-Bold',
@@ -100,12 +121,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 20,
     gap: 6,
-  },
-  lineStyle: {
-    width: '100%',
-    borderBottomWidth: 1,
-    height: 1,
-    borderColor: '#ADADAF',
   },
   textTotal: {
     fontFamily: 'Poppins-SemiBold',

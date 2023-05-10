@@ -26,8 +26,8 @@ const Products = () => {
   const [isLoading, setLoading] = useState(true);
   const [noData, setNoData] = useState(false);
   const [category, setCategory] = useState(route.params.category || '');
-  const [limit, setLimit] = useState('');
-  const [page, setPage] = useState(6);
+  const [limit, setLimit] = useState(6);
+  const [page, setPage] = useState(1);
   const [sort, setSort] = useState('');
   const [totalPage, setTotalPage] = useState('');
 
@@ -67,7 +67,7 @@ const Products = () => {
     if (totalPage === page) return;
     const params = {limit, page: page + 1, category, search: searchInput, sort};
     try {
-      console.log('FETCHING NEXT PAGE', params.page);
+      console.log('FETCHING NEXT, PAGE', params.page);
       const result = await getProducts(params, controller);
       // console.log(result.data.data);
       const merged = [...dataProduct, ...result.data.data];
@@ -114,6 +114,7 @@ const Products = () => {
                 onChangeText={handleSearch}
                 placeholderTextColor={'black'}
                 autoFocus={route.params.search}
+                // autoFocus={true}
               />
             </View>
 
@@ -130,10 +131,18 @@ const Products = () => {
                 <Menu.Item bold onPress={() => setSort('')}>
                   Reset
                 </Menu.Item>
-                <Menu.Item onPress={() => setSort('cheapest')}>
+                <Menu.Item
+                  onPress={() => {
+                    setSort('cheapest');
+                    setPage(1);
+                  }}>
                   Cheapest
                 </Menu.Item>
-                <Menu.Item onPress={() => setSort('priciest')}>
+                <Menu.Item
+                  onPress={() => {
+                    setSort('priciest');
+                    setPage(1);
+                  }}>
                   priciest
                 </Menu.Item>
               </Menu>

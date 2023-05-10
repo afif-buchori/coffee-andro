@@ -24,6 +24,8 @@ import Cart from './src/screens/transaction/Cart';
 import Products from './src/screens/Product';
 import Delivery from './src/screens/transaction/Delivery';
 import Logout from './src/screens/Auth/Logout';
+import Payment from './src/screens/transaction/Payment';
+import EditProfile from './src/screens/Profile/EditProfile';
 
 const DrawerNavigator = () => {
   const navigation = useNavigation();
@@ -103,6 +105,7 @@ const StackNavigator = () => {
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Forgot" component={Forgot} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen
         name="Products"
         component={Products}
@@ -114,6 +117,11 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Delivery"
         component={Delivery}
+        options={{headerShown: true}}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
         options={{headerShown: true}}
       />
       <Stack.Screen name="Drawer" component={DrawerNavigator} />

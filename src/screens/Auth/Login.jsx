@@ -42,14 +42,14 @@ const Login = () => {
       const result = await fetchLogin(form, controller);
       console.log(result);
       dispatch(userAction.authLogin(result.data));
-      navigation.navigate('Home');
+      navigation.navigate('Drawer');
       setLoading(false);
     } catch (error) {
       console.log(error);
       if (error.response && error.response.status === 401) {
         console.log(error.response.data);
-        setToast(true);
         setToastInfo({msg: error.response.data.msg, display: 'error'});
+        setToast(true);
       }
       setLoading(false);
     }
