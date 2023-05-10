@@ -4,7 +4,7 @@ const {createSlice} = require('@reduxjs/toolkit');
 const initialState = {
   token: null,
   id: null,
-  image: null,
+  image: '',
   role: null,
   phone: null,
   isloading: false,

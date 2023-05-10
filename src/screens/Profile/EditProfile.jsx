@@ -7,20 +7,30 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import {NativeBaseProvider, Radio, Stack} from 'native-base';
+import {NativeBaseProvider, Radio, Stack, isEmptyObj} from 'native-base';
 import React, {useEffect, useMemo, useState} from 'react';
 import ButtonSecondary from '../../components/ButtonSecondary';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {useSelector} from 'react-redux';
 import LoaderSpin from '../../components/LoaderSpin';
-import {getProfile} from '../../utils/https/auth';
+import {getProfile, updateProfile} from '../../utils/https/auth';
 import globalStyle from '../../styles/globalStyle';
+import ToastFetching from '../../components/ToastFetching';
+import BtnLoadingSec from '../../components/BtnLoadingSec';
+import ButtonPrimary from '../../components/ButtonPrimary';
+import {useNavigation} from '@react-navigation/native';
 
 const EditProfile = () => {
+  const navigation = useNavigation();
   const userRedux = useSelector(state => state.user);
   // console.log('DATA REDUX USER', userRedux);
   const controller = useMemo(() => new AbortController(), []);
   const [data, setData] = useState({});
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [fetchLoading, setFetchLoading] = useState(false);
+  const [isToast, setToast] = useState(false);
+  const [toastInfo, setToastInfo] = useState({});
+  const [isSuccess, setSuccess] = useState(false);
 
   const [disName, setDisName] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -29,12 +39,13 @@ const EditProfile = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
+  const [file, setFile] = useState('');
 
   const fetching = async () => {
     setLoading(true);
     try {
       const result = await getProfile(userRedux.id, controller);
-      console.log('DATA PROFILE', result.data.data);
+      // console.log('DATA PROFILE', result.data.data);
       setData(result.data.data);
       setLoading(false);
     } catch (error) {
@@ -50,6 +61,40 @@ const EditProfile = () => {
     setGender(value);
   };
 
+  // console.log('TOKEN', userRedux.token);
+  // console.log(data.profile_picture);
+
+  const handleEditProfile = async () => {
+    const userData = {};
+    if (disName !== '') userData.display_name = disName;
+    if (firstName !== '') userData.first_name = firstName;
+    if (lastName !== '') userData.last_name = lastName;
+    if (gender !== '') userData.gender = gender;
+    if (email !== '') userData.email = email;
+    if (phone !== '') userData.phone = phone;
+    if (address !== '') userData.address = address;
+    // console.log(userData);
+    if (isEmptyObj(userData)) {
+      setToastInfo({msg: 'Nothing changed in your profile', display: 'error'});
+      setToast(true);
+      return;
+    }
+    setFetchLoading(true);
+    try {
+      const result = await updateProfile(userRedux.token, userData, controller);
+      console.log('HASIL UPDATE', result);
+      if (result.status === 200) {
+        setToastInfo({msg: 'Update Success', display: 'success'});
+        setToast(true);
+        setSuccess(true);
+        setFetchLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setFetchLoading(false);
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -58,19 +103,27 @@ const EditProfile = () => {
         </View>
       ) : (
         <NativeBaseProvider>
+          <ToastFetching
+            isShow={isToast}
+            onClose={() => setToast(false)}
+            info={toastInfo}
+          />
           <ScrollView style={{flex: 1}}>
             <View style={styles.screen}>
-              <View>
-                {data.image ? (
-                  <Image source={{uri: data.image}} style={styles.imageProd} />
+              <View style={{marginBottom: 16}}>
+                {data.profile_picture ? (
+                  <Image
+                    source={{uri: data.profile_picture}}
+                    style={styles.imageProd}
+                  />
                 ) : (
                   <Image
                     source={require('../../assets/images/ph-users.png')}
                     style={styles.imageProd}
                   />
                 )}
-                <Pressable>
-                  <Text>P</Text>
+                <Pressable style={styles.btnEdit}>
+                  <FontAwesomeIcon name="pencil" size={18} color="white" />
                 </Pressable>
               </View>
               <View style={{marginBottom: 24, width: '100%'}}>
@@ -106,18 +159,17 @@ const EditProfile = () => {
 
               <Radio.Group
                 flexDirection="row"
-                defaultValue={data.gender}
-                value={gender}
+                value={data.gender || gender}
                 onChange={onChangeGender}
                 name="gender"
                 // accessibilityLabel="select prize"
               >
                 <Stack direction="row" space={6} w="100%" marginBottom={6}>
                   <Text style={styles.textLabel}>Gender :</Text>
-                  <Radio value="1" my={1} colorScheme="warning">
+                  <Radio value="male" my={1} colorScheme="warning">
                     Male
                   </Radio>
-                  <Radio value="2" my={1} colorScheme="warning">
+                  <Radio value="female" my={1} colorScheme="warning">
                     Female
                   </Radio>
                 </Stack>
@@ -156,6 +208,21 @@ const EditProfile = () => {
                   placeholderTextColor={'black'}
                 />
               </View>
+              <View style={{marginHorizontal: 20, width: '100%'}}>
+                {fetchLoading ? (
+                  <BtnLoadingSec />
+                ) : isSuccess ? (
+                  <ButtonPrimary
+                    title="Back Profile"
+                    handlePress={() => navigation.navigate('Profile')}
+                  />
+                ) : (
+                  <ButtonSecondary
+                    title="Save Change"
+                    handlePress={handleEditProfile}
+                  />
+                )}
+              </View>
             </View>
           </ScrollView>
         </NativeBaseProvider>
@@ -181,6 +248,17 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
+  },
+  btnEdit: {
+    width: 36,
+    height: 36,
+    borderRadius: 17,
+    backgroundColor: '#6A4029',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    right: 4,
   },
   textReg: {
     fontFamily: 'Poppins-Regular',

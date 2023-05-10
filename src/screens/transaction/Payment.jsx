@@ -43,6 +43,7 @@ const Payment = () => {
       delivery_id: cartRedux.delivery,
       notes: '',
       pay_status_id: 1,
+      payment_id: 1,
       products: dataShopping,
     };
     console.log('BODY FETCHING', body);

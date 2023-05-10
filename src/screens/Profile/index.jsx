@@ -14,6 +14,7 @@ import LoaderSpin from '../../components/LoaderSpin';
 import {getProfile} from '../../utils/https/auth';
 import {getHistory} from '../../utils/https/transaction';
 
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
 
 const CardOrder = ({data}) => {
@@ -44,7 +45,7 @@ const Profile = () => {
     setLoading(true);
     try {
       const result = await getProfile(userRedux.id, controller);
-      // console.log("DATA PROFILE",result.data.data);
+      console.log('DATA PROFILE', result.data.data);
       setData(result.data.data);
       const getHistoryOrder = await getHistory(userRedux.token, controller);
       console.log('HISTORY ORDER', getHistoryOrder.data.data);
@@ -69,17 +70,20 @@ const Profile = () => {
         <ScrollView>
           <View style={styles.screen}>
             <View style={{alignItems: 'center', paddingHorizontal: '10%'}}>
-              <View>
-                {data.image ? (
-                  <Image source={{uri: data.image}} style={styles.imageProd} />
+              <View style={{position: 'relative', marginBottom: 12}}>
+                {data.profile_picture ? (
+                  <Image
+                    source={{uri: data.profile_picture}}
+                    style={styles.imageProd}
+                  />
                 ) : (
                   <Image
                     source={require('../../assets/images/ph-users.png')}
                     style={styles.imageProd}
                   />
                 )}
-                <Pressable>
-                  <Text>P</Text>
+                <Pressable style={styles.btnEdit}>
+                  <FontAwesomeIcon name="pencil" size={18} color="white" />
                 </Pressable>
               </View>
               <Text style={styles.textBold}>{data.display_name}</Text>
@@ -88,35 +92,13 @@ const Profile = () => {
                 {data.address || '*address not set*'}
               </Text>
             </View>
-            <View
-              style={{
-                width: '100%',
-                borderTopWidth: 8,
-                borderBottomWidth: 8,
-                borderColor: '#BABABA30',
-                marginBottom: 22,
-              }}>
-              <View
-                style={{
-                  width: '100%',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  paddingHorizontal: '10%',
-                  paddingVertical: 8,
-                }}>
+            <View style={styles.orderComponent}>
+              <View style={styles.orderHistoryTitlte}>
                 <Text style={styles.textBold}>Order History</Text>
                 <Text style={styles.textReg}>See more</Text>
               </View>
               <ScrollView horizontal={true}>
-                <View
-                  style={{
-                    gap: 24,
-                    flexDirection: 'row',
-                    paddingHorizontal: 36,
-                    paddingTop: 8,
-                    paddingBottom: 16,
-                  }}>
+                <View style={styles.orderCardContainer}>
                   {dataOrder.length >= 1 ? (
                     dataOrder.map((item, idx) => (
                       <CardOrder key={idx} data={item} />
@@ -129,12 +111,7 @@ const Profile = () => {
                 </View>
               </ScrollView>
             </View>
-            <View
-              style={{
-                width: '100%',
-                gap: 16,
-                paddingHorizontal: '10%',
-              }}>
+            <View style={styles.actionContainer}>
               <ButtonWhite title="Edit Password" />
               <ButtonWhite title="FAQ" />
               <ButtonWhite title="Help" />
@@ -183,6 +160,44 @@ const styles = StyleSheet.create({
     width: 59,
     height: 64,
     borderRadius: 20,
+  },
+  btnEdit: {
+    width: 36,
+    height: 36,
+    borderRadius: 17,
+    backgroundColor: '#6A4029',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    right: 4,
+  },
+  orderHistoryTitlte: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: '10%',
+    paddingVertical: 8,
+  },
+  orderComponent: {
+    width: '100%',
+    borderTopWidth: 8,
+    borderBottomWidth: 8,
+    borderColor: '#BABABA30',
+    marginBottom: 22,
+  },
+  orderCardContainer: {
+    gap: 24,
+    flexDirection: 'row',
+    paddingHorizontal: 36,
+    paddingTop: 8,
+    paddingBottom: 16,
+  },
+  actionContainer: {
+    width: '100%',
+    gap: 16,
+    paddingHorizontal: '10%',
   },
 });
 

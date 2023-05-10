@@ -19,21 +19,30 @@ import {useRoute} from '@react-navigation/native';
 
 const Products = () => {
   const route = useRoute();
+  const {params} = route;
   // console.log(route.params);
   const controller = useMemo(() => new AbortController(), []);
   const [dataProduct, setDataProduct] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [noData, setNoData] = useState(false);
-  const [category, setCategory] = useState(route.params.category || '');
+  const [category, setCategory] = useState(
+    params && params.category ? params.category : '',
+  );
   const [limit, setLimit] = useState(6);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(params && params.page ? params.page : 1);
   const [sort, setSort] = useState('');
   const [totalPage, setTotalPage] = useState('');
 
   const fetching = async () => {
     setLoading(true);
-    const params = {limit, page, category, search: searchInput, sort};
+    const params = {
+      limit,
+      page,
+      category,
+      search: searchInput,
+      sort,
+    };
     try {
       const result = await getProducts(params, controller);
       // console.log(result.data.meta);
@@ -52,7 +61,7 @@ const Products = () => {
 
   useEffect(() => {
     fetching();
-  }, [category, searchInput, sort]);
+  }, [category, searchInput, sort, route.params]);
 
   const handleSearch = debounce(text => {
     setPage(1);
@@ -113,7 +122,7 @@ const Products = () => {
                 placeholder="Search"
                 onChangeText={handleSearch}
                 placeholderTextColor={'black'}
-                autoFocus={route.params.search}
+                autoFocus={params ? params.search : false}
                 // autoFocus={true}
               />
             </View>

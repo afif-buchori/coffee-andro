@@ -26,24 +26,50 @@ import Delivery from './src/screens/transaction/Delivery';
 import Logout from './src/screens/Auth/Logout';
 import Payment from './src/screens/transaction/Payment';
 import EditProfile from './src/screens/Profile/EditProfile';
+import CustomDrawer from './src/components/CustomDrawer';
+import SplashScreen from './src/components/SplashCreen';
 
 const DrawerNavigator = () => {
   const navigation = useNavigation();
   const {Navigator, Screen} = createDrawerNavigator();
   return (
-    <Navigator initialRouteName="Home">
+    <Navigator
+      initialRouteName="Home"
+      drawerContent={props => <CustomDrawer {...props} />}
+      screenOptions={{
+        headerShown: false,
+        drawerActiveBackgroundColor: '#6A4029',
+        drawerActiveTintColor: 'white',
+        drawerLabelStyle: {marginLeft: -20},
+      }}>
       <Screen
         name="Home"
         component={Home}
         options={{
           headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
           drawerIcon: ({color}) => (
             <Ionicons name="home-outline" size={22} color={color} />
           ),
+          // headerLeft: () => (
+          //   <Pressable onPress={() => navigation.toggleDrawer()}>
+          //     <View style={{marginLeft: 10}}>
+          //       <Ionicons
+          //         name="ellipsis-vertical-outline"
+          //         size={24}
+          //         color="black"
+          //       />
+          //     </View>
+          //   </Pressable>
+          // ),
           headerRight: () => (
             <Pressable onPress={() => navigation.navigate('Cart')}>
               <View style={{marginRight: '8%'}}>
-                <Ionicons name="cart-outline" size={24} />
+                <Ionicons name="cart-outline" size={24} color="black" />
               </View>
             </Pressable>
           ),
@@ -54,6 +80,11 @@ const DrawerNavigator = () => {
         component={Profile}
         options={{
           headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
           drawerIcon: ({color}) => (
             <Ionicons name="person-circle-outline" size={24} color={color} />
           ),
@@ -64,6 +95,11 @@ const DrawerNavigator = () => {
         component={Cart}
         options={{
           headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
           drawerIcon: ({color}) => (
             <Ionicons name="cart-outline" size={24} color={color} />
           ),
@@ -75,6 +111,11 @@ const DrawerNavigator = () => {
         options={{
           title: 'All Products',
           headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
           drawerIcon: ({color}) => (
             <Ionicons name="grid-outline" size={24} color={color} />
           ),
@@ -105,13 +146,26 @@ const StackNavigator = () => {
       <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Forgot" component={Forgot} />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{
+          title: 'Edit Profile',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+        }}
+      />
       <Stack.Screen
         name="Products"
         component={Products}
         options={{
           title: 'All Products',
           headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
         }}
       />
       <Stack.Screen
@@ -139,7 +193,7 @@ const StackNavigator = () => {
           headerRight: () => (
             <Pressable onPress={() => navigation.navigate('Cart')}>
               <View style={{marginRight: '10%'}}>
-                <Ionicons name="cart-outline" size={24} />
+                <Ionicons name="cart-outline" size={24} color="black" />
               </View>
             </Pressable>
           ),

@@ -13,6 +13,7 @@ import LoaderScreen from '../../components/LoaderScreen';
 import ButtonSecondary from '../../components/ButtonSecondary';
 import {useDispatch} from 'react-redux';
 import {cartAction} from '../../redux/slices/cart';
+import ToastFetching from '../../components/ToastFetching';
 
 const ProductDetails = () => {
   const route = useRoute();
@@ -20,6 +21,8 @@ const ProductDetails = () => {
   const dispatch = useDispatch();
   const controller = useMemo(() => new AbortController(), []);
   const [isLoading, setLoading] = useState(true);
+  const [isToast, setToast] = useState(false);
+  const [toastInfo, setToastInfo] = useState({});
   const [dataProd, setDataProd] = useState({});
   const [size, setSize] = useState(0);
 
@@ -49,6 +52,11 @@ const ProductDetails = () => {
       qty: 1,
       price: dataProd.price,
     };
+    setToastInfo({
+      msg: `Adding ${dataProd.prod_name}`,
+      display: 'success',
+    });
+    setToast(true);
     dispatch(cartAction.addtoCart(cart));
   };
   return (
@@ -57,6 +65,11 @@ const ProductDetails = () => {
         <LoaderScreen />
       ) : (
         <ScrollView>
+          <ToastFetching
+            isShow={isToast}
+            onClose={() => setToast(false)}
+            info={toastInfo}
+          />
           <View style={styles.container}>
             {dataProd.image ? (
               <Image source={{uri: dataProd.image}} style={styles.imageProd} />

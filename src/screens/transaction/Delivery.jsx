@@ -53,17 +53,17 @@ const Delivery = () => {
               name="delivery"
               // accessibilityLabel="select prize"
             >
-              <Radio value="1" my={1} colorScheme="warning">
+              <Radio value={1} my={1} colorScheme="warning">
                 Door delivery
               </Radio>
               <View
                 style={[globalStyle.lineStyle, {marginVertical: 12}]}></View>
-              <Radio value="2" my={1} colorScheme="warning">
+              <Radio value={2} my={1} colorScheme="warning">
                 Pick up at store
               </Radio>
               <View
                 style={[globalStyle.lineStyle, {marginVertical: 12}]}></View>
-              <Radio value="3" my={1} colorScheme="warning">
+              <Radio value={3} my={1} colorScheme="warning">
                 Dine in
               </Radio>
             </Radio.Group>

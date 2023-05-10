@@ -171,7 +171,9 @@ const Home = () => {
         ) : (
           <View>
             <Pressable
-              onPress={() => navigation.navigate('Products', {category})}>
+              onPress={() =>
+                navigation.navigate('Products', {category, page: 1})
+              }>
               <Text
                 style={{
                   color: '#6A4029',
