@@ -5,8 +5,8 @@
     <application
       android:name=".MainApplication"
       android:label="Coffee Shop"
-      android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
+      android:icon="@mipmap/icon_logo"
+      android:roundIcon="@mipmap/icon_logo"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
       <activity

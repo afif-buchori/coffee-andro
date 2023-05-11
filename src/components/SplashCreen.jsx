@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
@@ -20,6 +20,8 @@ const SplashScreen = () => {
         source={require('../assets/icons/icon-logo.png')}
         style={styles.logo}
       />
+      <Text style={styles.textNot}>BUKAN</Text>
+      <Text style={styles.textBrand}>COFFEE SHOP</Text>
     </View>
   );
 };
@@ -35,6 +37,19 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: 'contain',
+  },
+  textNot: {
+    fontFamily: 'Poppins-ExtraBold',
+    fontSize: 36,
+    color: '#FFBA33',
+    textAlign: 'center',
+    marginTop: 40,
+  },
+  textBrand: {
+    fontFamily: 'Poppins-ExtraBold',
+    fontSize: 36,
+    color: '#6A4029',
+    textAlign: 'center',
   },
 });
 
