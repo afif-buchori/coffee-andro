@@ -16,6 +16,11 @@ const CardProducts = props => {
           style={styles.imageProd}
         />
       )}
+      {props.discount && (
+        <View style={styles.discountCard}>
+          <Text style={styles.textDiscount}>{props.discount}%</Text>
+        </View>
+      )}
       <Text style={styles.titleCard}>{props.prodName}</Text>
       <Text style={{color: '#6A4029', fontFamily: 'Poppins-Bold'}}>
         IDR {props.price.toLocaleString('id-ID')}
@@ -44,7 +49,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     width: 168,
     height: 189,
-    backgroundColor: 'red',
     resizeMode: 'cover',
   },
   titleCard: {
@@ -55,6 +59,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 'auto',
     marginBottom: 6,
+  },
+  discountCard: {
+    position: 'absolute',
+    top: 20,
+    right: 6,
+    borderRadius: 12,
+    backgroundColor: '#FFBA33',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  textDiscount: {
+    fontFamily: 'Poppins-ExtraBold',
+    fontSize: 20,
+    color: '#6A4029',
   },
 });
 

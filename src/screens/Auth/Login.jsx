@@ -6,14 +6,14 @@ import {
   TextInput,
   StyleSheet,
 } from 'react-native';
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import ButtonGoogle from '../../components/ButtonGoogle';
 import authStyle from '../../styles/authStyle';
 import ButtonPrimary from '../../components/ButtonPrimary';
 
 import {useNavigation} from '@react-navigation/native';
 import {fetchLogin} from '../../utils/https/auth';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {userAction} from '../../redux/slices/auth';
 import ToastFetching from '../../components/ToastFetching';
 import BtnLoadingPrim from '../../components/BtnLoadingPrim';
@@ -27,6 +27,11 @@ const Login = () => {
   const [toastInfo, setToastInfo] = useState({});
   const [formEmail, setFormEmail] = useState('');
   const [formPass, setFormPass] = useState('');
+  const userRedux = useSelector(state => state.user);
+  // console.log(userRedux.token);
+  useEffect(() => {
+    if (userRedux.token) navigation.replace('Drawer');
+  }, []);
 
   const handleSubmit = async () => {
     if (formEmail === '' || formPass === '') {
@@ -42,7 +47,7 @@ const Login = () => {
       const result = await fetchLogin(form, controller);
       console.log(result);
       dispatch(userAction.authLogin(result.data));
-      navigation.navigate('Drawer');
+      navigation.replace('Drawer');
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -99,7 +104,7 @@ const Login = () => {
           </View>
           <ButtonGoogle
             title="Login with Google"
-            handlePress={() => navigation.navigate('Drawer')}
+            // handlePress={() => navigation.navigate('Drawer')}
           />
         </View>
       </View>

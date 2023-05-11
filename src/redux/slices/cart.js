@@ -107,6 +107,13 @@ const cartSlice = createSlice({
       //   shoppingCart: prevState.shoppingCart.concat(action.payload),
       // };
     },
+    deleteItem: (prevState, action) => {
+      const itemId = action.payload;
+      const updatedCart = prevState.shoppingCart.filter(
+        item => item.prod_id !== itemId,
+      );
+      return {...prevState, shoppingCart: updatedCart};
+    },
     resetCart: () => {
       return initialState;
     },

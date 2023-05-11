@@ -14,3 +14,8 @@ export const getProductsDetails = (params, controller) => {
   const url = `${baseUrl}/products/${params}`;
   return axios.get(url, params, {signal: controller.signal});
 };
+
+export const getPromos = controller => {
+  const url = baseUrl + '/promos';
+  return axios.get(url, {signal: controller.signal});
+};

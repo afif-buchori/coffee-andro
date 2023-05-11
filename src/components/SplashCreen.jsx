@@ -1,14 +1,16 @@
 import React, {useEffect} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
+  const userRedux = useSelector(state => state.user);
+  // console.log(userRedux.token);
   useEffect(() => {
-    // Simulasi delay selama 2 detik
     setTimeout(() => {
-      // Navigasi ke layar berikutnya setelah splash screen selesai
-      navigation.replace('Drawer');
+      if (userRedux.token) navigation.replace('Drawer');
+      else navigation.replace('Welcome');
     }, 5000);
   }, []);
 

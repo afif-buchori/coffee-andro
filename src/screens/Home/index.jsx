@@ -11,7 +11,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {NativeBaseProvider, Box, Menu} from 'native-base';
 import {debounce} from 'lodash';
 
-import {getProducts} from '../../utils/https/product';
+import {getProducts, getPromos} from '../../utils/https/product';
 import CardProducts from '../../components/CardProducts';
 import LoaderSpin from '../../components/LoaderSpin';
 import {useNavigation} from '@react-navigation/native';
@@ -20,6 +20,7 @@ const Home = () => {
   const navigation = useNavigation();
   const controller = useMemo(() => new AbortController(), []);
   const [dataProduct, setDataProduct] = useState([]);
+  const [dataPromo, setDataPromo] = useState([]);
   const [searchInput, setSearchInput] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [noData, setNoData] = useState(false);
@@ -35,6 +36,9 @@ const Home = () => {
       const result = await getProducts(params, controller);
       // console.log(result.data.data);
       setDataProduct(result.data.data);
+      const promos = await getPromos(controller);
+      console.log(promos.data.data);
+      setDataPromo(promos.data.data);
       setNoData(false);
       setLoading(false);
     } catch (error) {
@@ -61,32 +65,33 @@ const Home = () => {
 
   return (
     <NativeBaseProvider>
-      <View style={styles.mainScreen}>
-        <View style={{paddingHorizontal: '5%', gap: 10, paddingVertical: 8}}>
-          <Text style={styles.titleScreen}>A good coffee is a good day</Text>
+      <ScrollView>
+        <View style={styles.mainScreen}>
+          <View style={{paddingHorizontal: '5%', gap: 10, paddingVertical: 8}}>
+            <Text style={styles.titleScreen}>A good coffee is a good day</Text>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <View style={styles.SearchInput}>
-              <Image
-                source={require('../../assets/icons/icon-search.png')}
-                style={{width: 18, height: 18}}
-              />
-              <TextInput
-                style={{fontWeight: 'bold', width: '100%'}}
-                placeholder="Search"
-                onChangeText={handleSearch}
-                placeholderTextColor={'black'}
-                onFocus={() =>
-                  navigation.navigate('Products', {category, search: true})
-                }
-              />
-            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <View style={styles.SearchInput}>
+                <Image
+                  source={require('../../assets/icons/icon-search.png')}
+                  style={{width: 18, height: 18}}
+                />
+                <TextInput
+                  style={{fontWeight: 'bold', width: '100%'}}
+                  placeholder="Search"
+                  onChangeText={handleSearch}
+                  placeholderTextColor={'black'}
+                  onFocus={() =>
+                    navigation.navigate('Products', {category, search: true})
+                  }
+                />
+              </View>
 
-            {/* <Box alignItems="flex-end">
+              {/* <Box alignItems="flex-end">
               <Menu
                 w="190"
                 trigger={triggerProps => {
@@ -107,9 +112,8 @@ const Home = () => {
                 </Menu.Item>
               </Menu>
             </Box> */}
-          </View>
+            </View>
 
-          <ScrollView>
             <View
               style={{
                 width: '100%',
@@ -161,45 +165,99 @@ const Home = () => {
                 </Text>
               </Pressable>
             </View>
-          </ScrollView>
-        </View>
+          </View>
 
+          {isLoading ? (
+            <LoaderSpin />
+          ) : noData ? (
+            <Text style={styles.notFound}>Data Not Found</Text>
+          ) : (
+            <View>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate('Products', {category, page: 1})
+                }>
+                <Text
+                  style={{
+                    color: '#6A4029',
+                    textAlign: 'right',
+                    paddingHorizontal: '5%',
+                    fontFamily: 'Poppins-SemiBold',
+                  }}>
+                  See more
+                </Text>
+              </Pressable>
+              <ScrollView horizontal={true}>
+                <View style={styles.cardContainer}>
+                  {dataProduct.map(product => (
+                    <CardProducts
+                      key={product.id}
+                      prodId={product.id}
+                      prodName={product.prod_name}
+                      image={product.image}
+                      price={product.price}
+                    />
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
+          )}
+        </View>
+        {/* PROMO */}
         {isLoading ? (
-          <LoaderSpin />
+          <Box></Box>
         ) : noData ? (
           <Text style={styles.notFound}>Data Not Found</Text>
         ) : (
           <View>
-            <Pressable
-              onPress={() =>
-                navigation.navigate('Products', {category, page: 1})
-              }>
+            <View
+              style={{
+                width: '100%',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+                flexDirection: 'row',
+                paddingHorizontal: '5%',
+                marginTop: 12,
+              }}>
               <Text
                 style={{
                   color: '#6A4029',
-                  textAlign: 'right',
-                  paddingHorizontal: '5%',
                   fontFamily: 'Poppins-SemiBold',
+                  fontSize: 18,
                 }}>
-                See more
+                Promo
               </Text>
-            </Pressable>
+              <Pressable
+                onPress={() =>
+                  navigation.navigate('Products', {category, page: 1})
+                }>
+                <Text
+                  style={{
+                    color: '#6A4029',
+                    textAlign: 'right',
+                    fontFamily: 'Poppins-SemiBold',
+                  }}>
+                  See more
+                </Text>
+              </Pressable>
+            </View>
             <ScrollView horizontal={true}>
               <View style={styles.cardContainer}>
-                {dataProduct.map(product => (
+                {dataPromo.map(product => (
                   <CardProducts
                     key={product.id}
                     prodId={product.id}
                     prodName={product.prod_name}
                     image={product.image}
                     price={product.price}
+                    discount={product.discount}
                   />
                 ))}
               </View>
             </ScrollView>
           </View>
         )}
-      </View>
+      </ScrollView>
     </NativeBaseProvider>
   );
 };

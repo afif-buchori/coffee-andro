@@ -17,6 +17,7 @@ const Logout = () => {
   const handleLogout = () => {
     dispatch(userAction.authLogout());
     dispatch(cartAction.resetCart());
+    navigation.replace('Welcome');
   };
   return (
     <ImageBackground

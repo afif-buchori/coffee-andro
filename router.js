@@ -140,7 +140,15 @@ const StackNavigator = () => {
   const navigation = useNavigation();
   const Stack = createStackNavigator();
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName="Splash">
+      <Stack.Screen
+        name="Splash"
+        component={SplashScreen}
+        options={{headerShown: false}}
+      />
+
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Auth" component={Auth} />
       <Stack.Screen name="Signup" component={Signup} />

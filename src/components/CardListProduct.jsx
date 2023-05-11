@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     borderRadius: 70,
     width: 128,
     height: 128,
-    backgroundColor: 'red',
     resizeMode: 'cover',
   },
   titleCard: {

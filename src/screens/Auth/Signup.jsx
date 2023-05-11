@@ -1,5 +1,5 @@
 import {View, Text, ImageBackground, TextInput} from 'react-native';
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import ButtonGoogle from '../../components/ButtonGoogle';
 import ButtonSecondary from '../../components/ButtonSecondary';
 import authStyle from '../../styles/authStyle';
@@ -8,6 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 import BtnLoadingSec from '../../components/BtnLoadingSec';
 import {register} from '../../utils/https/auth';
 import ToastFetching from '../../components/ToastFetching';
+import {useSelector} from 'react-redux';
 
 const Signup = () => {
   const controller = useMemo(() => new AbortController(), []);
@@ -19,6 +20,11 @@ const Signup = () => {
   const [formEmail, setFormEmail] = useState('');
   const [formPass, setFormPass] = useState('');
   const [formPhone, setFormPhone] = useState('');
+  const userRedux = useSelector(state => state.user);
+  // console.log(userRedux.token);
+  useEffect(() => {
+    if (userRedux.token) navigation.replace('Drawer');
+  }, []);
 
   const handleSubmit = async () => {
     if ((formEmail === '', formPass === '', formPhone === '')) {
