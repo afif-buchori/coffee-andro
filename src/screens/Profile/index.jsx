@@ -95,7 +95,9 @@ const Profile = () => {
             <View style={styles.orderComponent}>
               <View style={styles.orderHistoryTitlte}>
                 <Text style={styles.textBold}>Order History</Text>
-                <Text style={styles.textReg}>See more</Text>
+                <Pressable onPress={() => navigation.navigate('History')}>
+                  <Text style={styles.textReg}>See more</Text>
+                </Pressable>
               </View>
               <ScrollView horizontal={true}>
                 <View style={styles.orderCardContainer}>

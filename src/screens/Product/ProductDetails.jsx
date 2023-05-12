@@ -24,7 +24,7 @@ const ProductDetails = () => {
   const [isToast, setToast] = useState(false);
   const [toastInfo, setToastInfo] = useState({});
   const [dataProd, setDataProd] = useState({});
-  const [size, setSize] = useState(0);
+  const [size, setSize] = useState(1);
 
   const fetching = async () => {
     setLoading(true);

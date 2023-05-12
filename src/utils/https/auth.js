@@ -20,6 +20,12 @@ export const forgotEmail = (email, controller) => {
   return axios.patch(url, {email}, {signal: controller.signal});
 };
 
+export const setPassbyForgot = (email, otpCode, password, controller) => {
+  const url = `${baseUrl}/auth/editpassbyforgot`;
+  const body = {email, code_otp: otpCode, password};
+  return axios.patch(url, body, {signal: controller.signal});
+};
+
 export const getProfile = (id, controller) => {
   const url = `${baseUrl}/users/${id}`;
   return axios.get(url, {signal: controller.signal});
@@ -36,6 +42,14 @@ export const updateProfile = (token, body, controller) => {
   // });
   // console.log(formData);
   return axios.patch(url, body, {
+    signal: controller.signal,
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
+export const authLogout = (token, controller) => {
+  const url = `${baseUrl}/auth/logout`;
+  return axios.delete(url, {
     signal: controller.signal,
     headers: {Authorization: `Bearer ${token}`},
   });

@@ -1,8 +1,11 @@
 import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {useSelector} from 'react-redux';
 
 const CardListProduct = props => {
+  const userState = useSelector(state => state.user);
   const navigation = useNavigation();
   return (
     <Pressable
@@ -15,6 +18,11 @@ const CardListProduct = props => {
           source={require('../assets/images/ph-product.png')}
           style={styles.imageProd}
         />
+      )}
+      {userState.role === 2 && (
+        <Pressable style={styles.btnEdit}>
+          <FontAwesomeIcon name="pencil" size={22} color="white" />
+        </Pressable>
       )}
       <Text style={styles.titleCard}>{props.prodName}</Text>
       <Text style={{color: '#6A4029', fontFamily: 'Poppins-Bold'}}>
@@ -54,6 +62,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 'auto',
     marginBottom: 6,
+  },
+  btnEdit: {
+    width: 46,
+    height: 46,
+    borderRadius: 30,
+    backgroundColor: '#6A4029',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: -11,
+    top: 160,
   },
 });
 

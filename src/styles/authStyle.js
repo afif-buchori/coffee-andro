@@ -21,6 +21,13 @@ const authStyle = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
+  authTitleCode: {
+    marginTop: 10,
+    fontSize: 65,
+    fontWeight: 700,
+    textAlign: 'center',
+    color: 'white',
+  },
   authDesc: {
     maxWidth: '80%',
     marginTop: 12,

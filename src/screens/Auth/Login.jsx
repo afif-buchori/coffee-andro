@@ -99,7 +99,9 @@ const Login = () => {
           )}
           <View style={styles.lineContainer}>
             <View style={styles.line}></View>
-            <Text>or Login in with</Text>
+            <Text style={{color: 'white', fontFamily: 'Poppins-Regular'}}>
+              or Login in with
+            </Text>
             <View style={styles.line}></View>
           </View>
           <ButtonGoogle

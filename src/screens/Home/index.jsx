@@ -11,13 +11,16 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {NativeBaseProvider, Box, Menu} from 'native-base';
 import {debounce} from 'lodash';
 
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {getProducts, getPromos} from '../../utils/https/product';
 import CardProducts from '../../components/CardProducts';
 import LoaderSpin from '../../components/LoaderSpin';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const Home = () => {
   const navigation = useNavigation();
+  const userRedux = useSelector(state => state.user);
   const controller = useMemo(() => new AbortController(), []);
   const [dataProduct, setDataProduct] = useState([]);
   const [dataPromo, setDataPromo] = useState([]);
@@ -74,6 +77,7 @@ const Home = () => {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                alignItems: 'center',
               }}>
               <View style={styles.SearchInput}>
                 <Image
@@ -91,6 +95,13 @@ const Home = () => {
                 />
               </View>
 
+              {userRedux.role === 2 && (
+                <Pressable
+                  onPress={() => navigation.navigate('CreateProduct')}
+                  style={styles.btnAdd}>
+                  <FontAwesomeIcon name="plus" size={22} color="white" />
+                </Pressable>
+              )}
               {/* <Box alignItems="flex-end">
               <Menu
                 w="190"
@@ -206,8 +217,6 @@ const Home = () => {
         {/* PROMO */}
         {isLoading ? (
           <Box></Box>
-        ) : noData ? (
-          <Text style={styles.notFound}>Data Not Found</Text>
         ) : (
           <View>
             <View
@@ -315,6 +324,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'center',
     marginTop: 60,
+  },
+  btnAdd: {
+    width: 46,
+    height: 46,
+    borderRadius: 30,
+    backgroundColor: '#6A4029',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

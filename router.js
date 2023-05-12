@@ -28,6 +28,8 @@ import Payment from './src/screens/transaction/Payment';
 import EditProfile from './src/screens/Profile/EditProfile';
 import CustomDrawer from './src/components/CustomDrawer';
 import SplashScreen from './src/components/SplashCreen';
+import History from './src/screens/transaction/History';
+import CreateProduct from './src/screens/Product/CreateProduct';
 
 const DrawerNavigator = () => {
   const navigation = useNavigation();
@@ -155,6 +157,17 @@ const StackNavigator = () => {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Forgot" component={Forgot} />
       <Stack.Screen
+        name="History"
+        component={History}
+        options={{
+          title: 'History Order',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+        }}
+      />
+      <Stack.Screen
         name="EditProfile"
         component={EditProfile}
         options={{
@@ -170,6 +183,17 @@ const StackNavigator = () => {
         component={Products}
         options={{
           title: 'All Products',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="CreateProduct"
+        component={CreateProduct}
+        options={{
+          title: 'Create Product',
           headerShown: true,
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',

@@ -110,7 +110,7 @@ const cartSlice = createSlice({
     deleteItem: (prevState, action) => {
       const itemId = action.payload;
       const updatedCart = prevState.shoppingCart.filter(
-        item => item.prod_id !== itemId,
+        item => item.product_id !== itemId,
       );
       return {...prevState, shoppingCart: updatedCart};
     },

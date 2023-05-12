@@ -1,5 +1,5 @@
 import {View, Text, ImageBackground} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import ButtonSecondary from '../../components/ButtonSecondary';
 import ButtonPrimary from '../../components/ButtonPrimary';
 import authStyle from '../../styles/authStyle';
@@ -7,14 +7,22 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {userAction} from '../../redux/slices/auth';
 import {cartAction} from '../../redux/slices/cart';
+import {authLogout} from '../../utils/https/auth';
 
 const Logout = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const redux = useSelector(state => state);
   console.log(redux.user, redux.cart);
+  const controller = useMemo(() => new AbortController(), []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const result = await authLogout(redux.user.token, controller);
+      console.log(result.data);
+    } catch (error) {
+      console.log(error.response);
+    }
     dispatch(userAction.authLogout());
     dispatch(cartAction.resetCart());
     navigation.replace('Welcome');
