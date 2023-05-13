@@ -18,6 +18,7 @@ const Delivery = () => {
     setDeliveryMethod(value);
   };
   const handleConfirm = () => {
+    console.log(deliveryMethod);
     dispatch(cartAction.deliveryMethod(deliveryMethod));
     navigation.navigate('Payment', {subtotal: route.params.total});
   };
@@ -54,17 +55,17 @@ const Delivery = () => {
               // accessibilityLabel="select prize"
             >
               <Radio value={1} my={1} colorScheme="warning">
-                Door delivery
+                Dine in
               </Radio>
               <View
                 style={[globalStyle.lineStyle, {marginVertical: 12}]}></View>
               <Radio value={2} my={1} colorScheme="warning">
-                Pick up at store
+                Door Delivery
               </Radio>
               <View
                 style={[globalStyle.lineStyle, {marginVertical: 12}]}></View>
               <Radio value={3} my={1} colorScheme="warning">
-                Dine in
+                Take Away
               </Radio>
             </Radio.Group>
           </View>
