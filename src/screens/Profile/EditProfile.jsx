@@ -20,6 +20,8 @@ import BtnLoadingSec from '../../components/BtnLoadingSec';
 import ButtonPrimary from '../../components/ButtonPrimary';
 import {useNavigation} from '@react-navigation/native';
 
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 const EditProfile = () => {
   const navigation = useNavigation();
   const userRedux = useSelector(state => state.user);
@@ -41,12 +43,23 @@ const EditProfile = () => {
   const [address, setAddress] = useState('');
   const [file, setFile] = useState('');
 
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(false);
+    setDate(currentDate);
+    // console.log(currentDate);
+  };
+
   const fetching = async () => {
     setLoading(true);
     try {
       const result = await getProfile(userRedux.id, controller);
       // console.log('DATA PROFILE', result.data.data);
       setData(result.data.data);
+      setDate(new Date(result.data.data.birth_date));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -63,6 +76,7 @@ const EditProfile = () => {
 
   // console.log('TOKEN', userRedux.token);
   // console.log(data.profile_picture);
+  // console.log(date);
 
   const handleEditProfile = async () => {
     const userData = {};
@@ -197,6 +211,25 @@ const EditProfile = () => {
                 />
               </View>
               {/* BRITHDATE */}
+              <View style={{marginBottom: 24, width: '100%'}}>
+                <Text style={styles.textLabel}>Birth Date :</Text>
+                <Pressable
+                  onPress={() => setShowPicker(true)}
+                  style={styles.dateStyle}>
+                  <Text style={styles.textDate}>
+                    {date.toLocaleDateString()}
+                  </Text>
+                  <FontAwesomeIcon name="calendar" size={22} color="#9F9F9F" />
+                </Pressable>
+                {showPicker && (
+                  <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="default"
+                    onChange={onChange}
+                  />
+                )}
+              </View>
 
               <View style={{marginBottom: 24, width: '100%'}}>
                 <Text style={styles.textLabel}>Delivery Address :</Text>
@@ -277,6 +310,18 @@ const styles = StyleSheet.create({
   textLabel: {
     fontFamily: 'Poppins-Bold',
     color: '#9F9F9F',
+  },
+  dateStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    paddingVertical: 10,
+  },
+  textDate: {
+    fontFamily: 'Poppins-Regular',
+    color: 'black',
   },
 });
 

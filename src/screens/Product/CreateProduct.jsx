@@ -20,18 +20,21 @@ import BtnLoadingSec from '../../components/BtnLoadingSec';
 import ButtonPrimary from '../../components/ButtonPrimary';
 import {useNavigation} from '@react-navigation/native';
 
+import {PermissionsAndroid} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
 const CreateProduct = () => {
   const navigation = useNavigation();
   const userRedux = useSelector(state => state.user);
   // console.log('DATA REDUX USER', userRedux);
   const controller = useMemo(() => new AbortController(), []);
-  const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [isToast, setToast] = useState(false);
   const [toastInfo, setToastInfo] = useState({});
   const [isSuccess, setSuccess] = useState(false);
 
+  const [fileImage, setFileImage] = useState('');
   const [name, setName] = useState('');
   const [category, setCategory] = useState(0);
   const [price, setPrice] = useState('');
@@ -54,6 +57,66 @@ const CreateProduct = () => {
     console.log(form);
   };
 
+  const openCamera = async () => {
+    try {
+      const checkGranted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      if (checkGranted) {
+        console.log('Camera permission is granted.');
+      } else {
+        console.log('Camera permission is not granted.');
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Camera Permission',
+            message: 'App needs camera permission to take pictures.',
+            buttonPositive: 'OK',
+            buttonNegative: 'Cancel',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Camera permission granted.');
+          // You can now access the camera.
+        } else {
+          console.log('Camera permission denied.');
+          // Handle permission denied case.
+        }
+      }
+    } catch (error) {
+      console.log('Error checking camera permission:', error);
+    }
+
+    const option = {
+      mediaType: 'photo',
+      quality: 1,
+    };
+    // =======> CAMERA <=========
+    // launchCamera(option, res => {
+    //   if (res.didCancel) {
+    //     console.log('User cancel');
+    //   } else if (res.errorCode) {
+    //     console.log(res.errorMessage);
+    //   } else {
+    //     // const data = res.assets[0];
+    //     // console.log(data);
+    //     setFileImage(res.assets[0]);
+    //   }
+    // });
+    // =======> GALERY <=========
+    launchImageLibrary(option, res => {
+      if (res.didCancel) {
+        console.log('User cancel');
+      } else if (res.errorCode) {
+        console.log(res.errorMessage);
+      } else {
+        const data = res.assets[0];
+        console.log(data);
+        setFileImage(res.assets[0]);
+      }
+    });
+  };
+
   return (
     <NativeBaseProvider>
       <ToastFetching
@@ -64,18 +127,15 @@ const CreateProduct = () => {
       <ScrollView style={{flex: 1}}>
         <View style={styles.screen}>
           <View style={{marginBottom: 46}}>
-            {/* {data.profile_picture ? (
+            {fileImage ? (
+              <Image source={{uri: fileImage.uri}} style={styles.imageProd} />
+            ) : (
               <Image
-                source={{uri: data.profile_picture}}
+                source={require('../../assets/images/ph-product.png')}
                 style={styles.imageProd}
               />
-            ) : ( */}
-            <Image
-              source={require('../../assets/images/ph-product.png')}
-              style={styles.imageProd}
-            />
-            {/* )} */}
-            <Pressable style={styles.btnEdit}>
+            )}
+            <Pressable onPress={openCamera} style={styles.btnEdit}>
               <FontAwesomeIcon name="pencil" size={24} color="white" />
             </Pressable>
           </View>

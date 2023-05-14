@@ -40,7 +40,7 @@ const Home = () => {
       // console.log(result.data.data);
       setDataProduct(result.data.data);
       const promos = await getPromos(controller);
-      console.log(promos.data.data);
+      // console.log("DATA PROMO", promos.data.data);
       setDataPromo(promos.data.data);
       setNoData(false);
       setLoading(false);
