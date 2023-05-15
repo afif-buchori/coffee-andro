@@ -9,15 +9,15 @@ const CardCartProd = ({data}) => {
 
   const handleQty = info => {
     if (info === 'inc') {
-      dispatch(cartAction.increment(data.product_id));
+      dispatch(cartAction.increment({id: data.product_id, size: data.size_id}));
     } else {
       if (data.qty === 1) return setDelete(true);
-      dispatch(cartAction.decrement(data.product_id));
+      dispatch(cartAction.decrement({id: data.product_id, size: data.size_id}));
     }
   };
 
   const handleDelete = () => {
-    dispatch(cartAction.deleteItem(data.product_id));
+    dispatch(cartAction.deleteItem({id: data.product_id, size: data.size_id}));
   };
 
   return (
@@ -35,10 +35,10 @@ const CardCartProd = ({data}) => {
           IDR {data.price.toLocaleString('id-ID')}
         </Text>
       </View>
-      <View style={{gap: 16, width: '100%'}}>
+      <View style={{gap: 8, width: '100%'}}>
         {isDelete ? (
           <>
-            <Text style={styles.titleProd}>Delete Products ?</Text>
+            <Text style={styles.titleProd}>Remove in cart ?</Text>
             <View style={{flexDirection: 'row', gap: 30}}>
               <TouchableOpacity
                 style={styles.btnDlt}
@@ -53,6 +53,13 @@ const CardCartProd = ({data}) => {
         ) : (
           <>
             <Text style={styles.titleProd}>{data.prodName}</Text>
+            <Text style={styles.titleSize}>
+              {data.size_id === 1
+                ? 'Regular'
+                : data.size_id === 2
+                ? 'Large'
+                : 'Extra Large'}
+            </Text>
             <View style={{flexDirection: 'row', gap: 30}}>
               <TouchableOpacity
                 onPress={() => handleQty('dec')}
@@ -103,6 +110,10 @@ const styles = StyleSheet.create({
   },
   titleProd: {
     fontFamily: 'Poppins-Bold',
+    color: 'black',
+  },
+  titleSize: {
+    fontFamily: 'Poppins-Regular',
     color: 'black',
   },
   btnQty: {

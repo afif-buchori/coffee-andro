@@ -25,6 +25,7 @@ const ProductDetails = () => {
   const [toastInfo, setToastInfo] = useState({});
   const [dataProd, setDataProd] = useState({});
   const [size, setSize] = useState(1);
+  const [newPrice, setNewPrice] = useState('');
 
   const fetching = async () => {
     setLoading(true);
@@ -32,6 +33,7 @@ const ProductDetails = () => {
       const result = await getProductsDetails(id, controller);
       // console.log(result);
       setDataProd(result.data.data);
+      setNewPrice(result.data.data.price);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -50,7 +52,7 @@ const ProductDetails = () => {
       image: dataProd.image || '',
       size_id: size || 1,
       qty: 1,
-      price: dataProd.price,
+      price: newPrice,
     };
     setToastInfo({
       msg: `Adding ${dataProd.prod_name}`,
@@ -81,7 +83,7 @@ const ProductDetails = () => {
             )}
             <Text style={styles.titleProd}>{dataProd.prod_name}</Text>
             <Text style={styles.textPrice}>
-              IDR {dataProd.price.toLocaleString('id-ID')}
+              IDR {newPrice.toLocaleString('id-ID')}
             </Text>
 
             <View style={styles.containerDesc}>
@@ -104,21 +106,30 @@ const ProductDetails = () => {
             </Text>
             <View style={{flexDirection: 'row', gap: 20}}>
               <Pressable
-                onPress={() => setSize(1)}
+                onPress={() => {
+                  setSize(1);
+                  setNewPrice(dataProd.price);
+                }}
                 style={size === 1 ? styles.selectedSize : styles.selectSize}>
                 <Text style={size === 1 ? styles.sizedTitle : styles.sizeTitle}>
                   R
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => setSize(2)}
+                onPress={() => {
+                  setSize(2);
+                  setNewPrice(dataProd.price + 2000);
+                }}
                 style={size === 2 ? styles.selectedSize : styles.selectSize}>
                 <Text style={size === 2 ? styles.sizedTitle : styles.sizeTitle}>
                   L
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => setSize(3)}
+                onPress={() => {
+                  setSize(3);
+                  setNewPrice(dataProd.price + 4000);
+                }}
                 style={size === 3 ? styles.selectedSize : styles.selectSize}>
                 <Text style={size === 3 ? styles.sizedTitle : styles.sizeTitle}>
                   XL

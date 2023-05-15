@@ -123,7 +123,7 @@ const DrawerNavigator = () => {
           ),
         }}
       />
-      <Screen
+      {/* <Screen
         name="Logout"
         component={Logout}
         options={{
@@ -133,7 +133,7 @@ const DrawerNavigator = () => {
             <Ionicons name="arrow-forward-outline" size={24} color={color} />
           ),
         }}
-      />
+      /> */}
     </Navigator>
   );
 };

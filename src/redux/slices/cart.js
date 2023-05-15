@@ -14,7 +14,9 @@ const cartSlice = createSlice({
   reducers: {
     increment: (prevState, action) => {
       const exsistIdx = prevState.shoppingCart.findIndex(
-        item => item.product_id === action.payload,
+        item =>
+          item.product_id === action.payload.id &&
+          item.size_id === action.payload.size,
       );
 
       if (exsistIdx !== -1) {
@@ -38,8 +40,11 @@ const cartSlice = createSlice({
     },
     decrement: (prevState, action) => {
       const exsistIdx = prevState.shoppingCart.findIndex(
-        item => item.product_id === action.payload,
+        item =>
+          item.product_id === action.payload.id &&
+          item.size_id === action.payload.size,
       );
+      console.log(action.payload, exsistIdx);
 
       if (exsistIdx !== -1) {
         // Jika objek dg nilai id yg sama sudah ada di dalam array,
@@ -108,11 +113,25 @@ const cartSlice = createSlice({
       // };
     },
     deleteItem: (prevState, action) => {
-      const itemId = action.payload;
       const updatedCart = prevState.shoppingCart.filter(
-        item => item.product_id !== itemId,
+        item =>
+          item.product_id !== action.payload.id ||
+          item.size_id !== action.payload.size,
       );
       return {...prevState, shoppingCart: updatedCart};
+      // const exsistIdx = prevState.shoppingCart.findIndex(
+      //   item =>
+      //     item.product_id === action.payload.product_id &&
+      //     item.size_id === action.payload.size_id,
+      // );
+      // const updatedCart = [
+      //   ...prevState.shoppingCart.slice(0, exsistIdx),
+      //   ...prevState.shoppingCart.slice(exsistIdx + 1),
+      // ];
+      // return {
+      //   ...prevState,
+      //   shoppingCart: updatedCart,
+      // };
     },
     resetCart: () => {
       return initialState;

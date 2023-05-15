@@ -22,17 +22,18 @@ import {useNavigation} from '@react-navigation/native';
 
 import {PermissionsAndroid} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {createProduct} from '../../utils/https/product';
 
 const CreateProduct = () => {
   const navigation = useNavigation();
   const userRedux = useSelector(state => state.user);
   // console.log('DATA REDUX USER', userRedux);
   const controller = useMemo(() => new AbortController(), []);
-  const [isLoading, setLoading] = useState(true);
-  const [fetchLoading, setFetchLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [isToast, setToast] = useState(false);
   const [toastInfo, setToastInfo] = useState({});
   const [isSuccess, setSuccess] = useState(false);
+  const [resultProd, setResultProd] = useState('');
 
   const [fileImage, setFileImage] = useState('');
   const [name, setName] = useState('');
@@ -43,10 +44,10 @@ const CreateProduct = () => {
     setCategory(value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const form = {
       prod_name: name,
-      category,
+      category_id: category,
       price,
     };
     if (name === '' || category === 0 || price === '') {
@@ -54,7 +55,32 @@ const CreateProduct = () => {
       setToast(true);
       return;
     }
-    console.log(form);
+    // console.log(form);
+    setLoading(true);
+    try {
+      const result = await createProduct(
+        userRedux.token,
+        fileImage,
+        form,
+        controller,
+      );
+      console.log(result.data.data[0]);
+      if (result.status === 201) {
+        setToastInfo({msg: 'Create Success', display: 'success'});
+        setToast(true);
+        setSuccess(true);
+        setResultProd(result.data.data[0].id);
+        setFileImage('');
+        setName('');
+        setCategory(0);
+        setPrice('');
+        console.log('SUCCESS');
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   const handleInputImage = async method => {
@@ -210,12 +236,14 @@ const CreateProduct = () => {
           </View>
 
           <View style={{marginHorizontal: 20, width: '100%'}}>
-            {fetchLoading ? (
+            {isLoading ? (
               <BtnLoadingSec />
             ) : isSuccess ? (
               <ButtonPrimary
-                title="Back Profile"
-                handlePress={() => navigation.navigate('Profile')}
+                title="See Product"
+                handlePress={() =>
+                  navigation.navigate('Detail', {id: resultProd})
+                }
               />
             ) : (
               <ButtonSecondary title="Save Change" handlePress={handleSubmit} />

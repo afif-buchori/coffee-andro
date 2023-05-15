@@ -1,18 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import {View, Image, Text, StyleSheet} from 'react-native';
+import {View, Image, Text, StyleSheet, Pressable} from 'react-native';
 import {useSelector} from 'react-redux';
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Logout from './Logout';
 
 const CustomDrawer = props => {
   // const {width} = Dimensions.get('screen');
+  const [showModal, setShowModal] = useState(false);
   const userRedux = useSelector(state => state.user);
   // console.log(userRedux);
   return (
     <DrawerContentScrollView {...props}>
+      <Logout showModal={showModal} closeModal={() => setShowModal(false)} />
       <View style={styles.containerImage}>
         {userRedux.token && userRedux.image ? (
           <Image source={{uri: userRedux.image}} style={styles.userImg} />
@@ -30,6 +34,18 @@ const CustomDrawer = props => {
       </View>
       <View style={styles.drawerListWrapper}>
         <DrawerItemList {...props} />
+        <Pressable
+          onPress={() => setShowModal(true)}
+          style={showModal ? styles.btnLogClick : styles.btnLogout}>
+          <Text style={showModal ? styles.textLogClick : styles.textLogout}>
+            Sign-Out
+          </Text>
+          <Ionicons
+            name="arrow-forward-outline"
+            size={24}
+            color={showModal ? 'white' : 'black'}
+          />
+        </Pressable>
       </View>
     </DrawerContentScrollView>
   );
@@ -66,5 +82,29 @@ const styles = StyleSheet.create({
   },
   drawerListWrapper: {
     marginTop: 25,
+    justifyContent: 'space-between',
   },
+  btnLogout: {
+    marginTop: 200,
+    marginHorizontal: 11,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  btnLogClick: {
+    backgroundColor: '#6A4029',
+    marginTop: 200,
+    marginHorizontal: 11,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  textLogout: {fontFamily: 'Poppins-Bold', fontSize: 13},
+  textLogClick: {fontFamily: 'Poppins-Bold', fontSize: 13, color: 'white'},
 });
