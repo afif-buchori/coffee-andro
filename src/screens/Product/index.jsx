@@ -17,7 +17,10 @@ import LoaderSpin from '../../components/LoaderSpin';
 import CardListProduct from '../../components/CardListProduct';
 import {useRoute} from '@react-navigation/native';
 
+import {useNavigation} from '@react-navigation/native';
+
 const Products = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const {params} = route;
   // console.log(route.params);

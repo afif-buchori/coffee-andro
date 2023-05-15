@@ -57,7 +57,11 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    const unsubFocus = navigation.addListener('focus', () => {
+      fetching();
+    });
     fetching();
+    return unsubFocus;
   }, []);
 
   return (

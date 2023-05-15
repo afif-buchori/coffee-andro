@@ -7,7 +7,14 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import {NativeBaseProvider, Radio, Stack, isEmptyObj} from 'native-base';
+import {
+  NativeBaseProvider,
+  Radio,
+  Stack,
+  Box,
+  Menu,
+  isEmptyObj,
+} from 'native-base';
 import React, {useEffect, useMemo, useState} from 'react';
 import ButtonSecondary from '../../components/ButtonSecondary';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -21,6 +28,8 @@ import ButtonPrimary from '../../components/ButtonPrimary';
 import {useNavigation} from '@react-navigation/native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {PermissionsAndroid} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 const EditProfile = () => {
   const navigation = useNavigation();
@@ -41,7 +50,7 @@ const EditProfile = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [file, setFile] = useState('');
+  const [fileImage, setFileImage] = useState('');
 
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
@@ -59,7 +68,14 @@ const EditProfile = () => {
       const result = await getProfile(userRedux.id, controller);
       // console.log('DATA PROFILE', result.data.data);
       setData(result.data.data);
+      setDisName(result.data.data.display_name);
+      setFirstName(result.data.data.first_name);
+      setLastName(result.data.data.last_name);
+      setGender(result.data.data.gender);
+      setEmail(result.data.data.email);
+      setPhone(result.data.data.phone);
       setDate(new Date(result.data.data.birth_date));
+      setAddress(result.data.data.address);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -74,28 +90,97 @@ const EditProfile = () => {
     setGender(value);
   };
 
+  const handleInputImage = async method => {
+    try {
+      const checkGranted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      if (checkGranted) {
+        console.log('Camera permission is granted.');
+      } else {
+        console.log('Camera permission is not granted.');
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Camera Permission',
+            message: 'App needs camera permission to take pictures.',
+            buttonPositive: 'OK',
+            buttonNegative: 'Cancel',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Camera permission granted.');
+          // You can now access the camera.
+        } else {
+          console.log('Camera permission denied.');
+          // Handle permission denied case.
+        }
+      }
+    } catch (error) {
+      console.log('Error checking camera permission:', error);
+    }
+    const option = {
+      mediaType: 'photo',
+      quality: 1,
+    };
+    if (method === 'camera') {
+      // =======> CAMERA <=========
+      launchCamera(option, res => {
+        if (res.didCancel) {
+          console.log('User cancel');
+        } else if (res.errorCode) {
+          console.log(res.errorMessage);
+        } else {
+          // const data = res.assets[0];
+          console.log(res.assets);
+          console.log('FILE IMAGE', res.assets);
+          setFileImage(res.assets[0]);
+        }
+      });
+    } else {
+      // =======> GALERY <=========
+      launchImageLibrary(option, res => {
+        if (res.didCancel) {
+          console.log('User cancel');
+        } else if (res.errorCode) {
+          console.log(res.errorMessage);
+        } else {
+          const data = res.assets;
+          console.log('FILE IMAGE', data);
+          setFileImage(res.assets[0]);
+        }
+      });
+    }
+  };
   // console.log('TOKEN', userRedux.token);
   // console.log(data.profile_picture);
   // console.log(date);
 
   const handleEditProfile = async () => {
-    const userData = {};
-    if (disName !== '') userData.display_name = disName;
-    if (firstName !== '') userData.first_name = firstName;
-    if (lastName !== '') userData.last_name = lastName;
-    if (gender !== '') userData.gender = gender;
-    if (email !== '') userData.email = email;
-    if (phone !== '') userData.phone = phone;
-    if (address !== '') userData.address = address;
+    const userData = {
+      display_name: disName,
+      first_name: firstName,
+      last_name: lastName,
+      gender,
+      email,
+      phone,
+      birth_date: date,
+      address,
+    };
     // console.log(userData);
-    if (isEmptyObj(userData)) {
-      setToastInfo({msg: 'Nothing changed in your profile', display: 'error'});
-      setToast(true);
-      return;
-    }
+    // if (isEmptyObj(userData)) {
+    //   setToastInfo({msg: 'Nothing changed in your profile', display: 'error'});
+    //   setToast(true);
+    //   return;
+    // }
     setFetchLoading(true);
     try {
-      const result = await updateProfile(userRedux.token, userData, controller);
+      const result = await updateProfile(
+        userRedux.token,
+        fileImage,
+        userData,
+        controller,
+      );
       console.log('HASIL UPDATE', result);
       if (result.status === 200) {
         setToastInfo({msg: 'Update Success', display: 'success'});
@@ -124,27 +209,53 @@ const EditProfile = () => {
           />
           <ScrollView style={{flex: 1}}>
             <View style={styles.screen}>
-              <View style={{marginBottom: 16}}>
-                {data.profile_picture ? (
+              <View style={{marginBottom: 24}}>
+                {/* {data.profile_picture ? (
                   <Image
                     source={{uri: data.profile_picture}}
                     style={styles.imageProd}
                   />
-                ) : (
-                  <Image
-                    source={require('../../assets/images/ph-users.png')}
-                    style={styles.imageProd}
-                  />
-                )}
-                <Pressable style={styles.btnEdit}>
-                  <FontAwesomeIcon name="pencil" size={18} color="white" />
-                </Pressable>
+                ) : ( */}
+                <Image
+                  source={
+                    fileImage !== ''
+                      ? {uri: fileImage.uri}
+                      : data.profile_picture
+                      ? {uri: data.profile_picture}
+                      : require('../../assets/images/ph-users.png')
+                  }
+                  style={styles.imageProd}
+                />
+                {/* )} */}
+
+                <Box alignItems="flex-end">
+                  <Menu
+                    w="190"
+                    trigger={triggerProps => {
+                      return (
+                        <Pressable {...triggerProps} style={styles.btnEdit}>
+                          <FontAwesomeIcon
+                            name="pencil"
+                            size={18}
+                            color="white"
+                          />
+                        </Pressable>
+                      );
+                    }}>
+                    <Menu.Item onPress={() => handleInputImage('camera')}>
+                      Camera
+                    </Menu.Item>
+                    <Menu.Item onPress={() => handleInputImage('galery')}>
+                      Galery
+                    </Menu.Item>
+                  </Menu>
+                </Box>
               </View>
               <View style={{marginBottom: 24, width: '100%'}}>
                 <Text style={styles.textLabel}>Display Name :</Text>
                 <TextInput
                   style={globalStyle.inputLine}
-                  value={disName || data.display_name}
+                  value={disName}
                   onChangeText={text => setDisName(text)}
                   placeholder="Enter your display name"
                   placeholderTextColor={'black'}
@@ -154,7 +265,7 @@ const EditProfile = () => {
                 <Text style={styles.textLabel}>First Name :</Text>
                 <TextInput
                   style={globalStyle.inputLine}
-                  value={firstName || data.first_name}
+                  value={firstName}
                   onChangeText={text => setFirstName(text)}
                   placeholder="Enter your first name"
                   placeholderTextColor={'black'}
@@ -164,7 +275,7 @@ const EditProfile = () => {
                 <Text style={styles.textLabel}>Last Name :</Text>
                 <TextInput
                   style={globalStyle.inputLine}
-                  value={lastName || data.last_name}
+                  value={lastName}
                   onChangeText={text => setLastName(text)}
                   placeholder="Enter your last name"
                   placeholderTextColor={'black'}
@@ -173,7 +284,7 @@ const EditProfile = () => {
 
               <Radio.Group
                 flexDirection="row"
-                value={data.gender || gender}
+                value={gender}
                 onChange={onChangeGender}
                 name="gender"
                 // accessibilityLabel="select prize"
@@ -193,7 +304,7 @@ const EditProfile = () => {
                 <Text style={styles.textLabel}>Email :</Text>
                 <TextInput
                   style={globalStyle.inputLine}
-                  value={email || data.email}
+                  value={email}
                   onChangeText={text => setEmail(text)}
                   placeholder="Enter your email address"
                   placeholderTextColor={'black'}
@@ -203,7 +314,7 @@ const EditProfile = () => {
                 <Text style={styles.textLabel}>Phone Number :</Text>
                 <TextInput
                   style={globalStyle.inputLine}
-                  value={phone || data.phone}
+                  value={phone}
                   onChangeText={text => setPhone(text)}
                   placeholder="Enter your phone number"
                   keyboardType="numeric"
@@ -235,7 +346,7 @@ const EditProfile = () => {
                 <Text style={styles.textLabel}>Delivery Address :</Text>
                 <TextInput
                   style={globalStyle.inputLine}
-                  value={address || data.address}
+                  value={address}
                   onChangeText={text => setAddress(text)}
                   placeholder="Enter your delivery address"
                   placeholderTextColor={'black'}

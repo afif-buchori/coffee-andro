@@ -54,7 +54,17 @@ const Home = () => {
   };
 
   useEffect(() => {
+    // const unsubFocus = navigation.addListener('focus', () => {
+    //   console.log('NEW');
     fetching();
+    // });
+    // const unsubBlur = navigation.addListener('blur', () => {
+    //   console.log('OUT');
+    // });
+    // return () => {
+    //   unsubFocus();
+    //   unsubBlur();
+    // };
   }, [category, searchInput, sort]);
 
   const handleSearch = debounce(text => {

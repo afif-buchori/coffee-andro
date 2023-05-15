@@ -27,7 +27,7 @@ import Logout from './src/screens/Auth/Logout';
 import Payment from './src/screens/transaction/Payment';
 import EditProfile from './src/screens/Profile/EditProfile';
 import CustomDrawer from './src/components/CustomDrawer';
-import SplashScreen from './src/components/SplashCreen';
+import MySplashScreen from './src/components/MySplashScreen';
 import History from './src/screens/transaction/History';
 import CreateProduct from './src/screens/Product/CreateProduct';
 
@@ -147,7 +147,7 @@ const StackNavigator = () => {
       initialRouteName="Splash">
       <Stack.Screen
         name="Splash"
-        component={SplashScreen}
+        component={MySplashScreen}
         options={{headerShown: false}}
       />
 

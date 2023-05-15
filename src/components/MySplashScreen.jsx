@@ -3,7 +3,7 @@ import {Image, StyleSheet, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 
-const SplashScreen = () => {
+const MySplashScreen = () => {
   const navigation = useNavigation();
   const userRedux = useSelector(state => state.user);
   // console.log(userRedux.token);
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SplashScreen;
+export default MySplashScreen;

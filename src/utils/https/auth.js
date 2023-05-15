@@ -31,19 +31,30 @@ export const getProfile = (id, controller) => {
   return axios.get(url, {signal: controller.signal});
 };
 
-export const updateProfile = (token, body, controller) => {
+export const updateProfile = (token, file, body, controller) => {
   const url = `${baseUrl}/auth/profile`;
-  // const formData = new FormData();
-  // if (file !== '') {
-  //   formData.append('image', file);
-  // }
+  console.log('FILE IMAGE', file);
+  const formData = new FormData();
+  if (file !== '') {
+    formData.append('image', {
+      uri: file.uri,
+      name: file.fileName,
+      type: file.type,
+    });
+  }
+  Object.entries(body).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
   // Object.keys(body).forEach(key => {
   //   formData.set(key, body[key]);
   // });
-  // console.log(formData);
-  return axios.patch(url, body, {
+  // console.log('FORMDATA', formData);
+  return axios.patch(url, formData, {
     signal: controller.signal,
-    headers: {Authorization: `Bearer ${token}`},
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
   });
 };
 
@@ -51,6 +62,8 @@ export const authLogout = (token, controller) => {
   const url = `${baseUrl}/auth/logout`;
   return axios.delete(url, {
     signal: controller.signal,
-    headers: {Authorization: `Bearer ${token}`},
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
