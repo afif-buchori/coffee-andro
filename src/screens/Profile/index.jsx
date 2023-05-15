@@ -16,6 +16,7 @@ import {getHistory} from '../../utils/https/transaction';
 
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
+import EditPassword from '../../components/EditPassword';
 
 const CardOrder = ({data}) => {
   return (
@@ -40,6 +41,7 @@ const Profile = () => {
   const [data, setData] = useState({});
   const [dataOrder, setDataOrder] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const fetching = async () => {
     setLoading(true);
@@ -72,6 +74,11 @@ const Profile = () => {
         </View>
       ) : (
         <ScrollView>
+          <EditPassword
+            showModal={showModal}
+            closeModal={() => setShowModal(false)}
+            msg="Are you sure to delete the selected items?"
+          />
           <View style={styles.screen}>
             <View style={{alignItems: 'center', paddingHorizontal: '10%'}}>
               <View style={{position: 'relative', marginBottom: 12}}>
@@ -86,9 +93,9 @@ const Profile = () => {
                     style={styles.imageProd}
                   />
                 )}
-                <Pressable style={styles.btnEdit}>
+                {/* <Pressable style={styles.btnEdit}>
                   <FontAwesomeIcon name="pencil" size={18} color="white" />
-                </Pressable>
+                </Pressable> */}
               </View>
               <Text style={styles.textBold}>{data.display_name}</Text>
               <Text style={styles.textReg}>{data.email}</Text>
@@ -118,7 +125,10 @@ const Profile = () => {
               </ScrollView>
             </View>
             <View style={styles.actionContainer}>
-              <ButtonWhite title="Edit Password" />
+              <ButtonWhite
+                title="Edit Password"
+                handlePress={() => setShowModal(true)}
+              />
               <ButtonWhite title="FAQ" />
               <ButtonWhite title="Help" />
               <View style={{width: '100%'}}>
@@ -149,9 +159,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   imageProd: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
   },
   textReg: {
     fontFamily: 'Poppins-Regular',

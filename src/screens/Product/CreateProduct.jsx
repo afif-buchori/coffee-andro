@@ -7,7 +7,7 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import {NativeBaseProvider, Radio, Stack, isEmptyObj} from 'native-base';
+import {NativeBaseProvider, Radio, Stack, Box, Menu} from 'native-base';
 import React, {useEffect, useMemo, useState} from 'react';
 import ButtonSecondary from '../../components/ButtonSecondary';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -57,7 +57,7 @@ const CreateProduct = () => {
     console.log(form);
   };
 
-  const openCamera = async () => {
+  const handleInputImage = async method => {
     try {
       const checkGranted = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -86,35 +86,38 @@ const CreateProduct = () => {
     } catch (error) {
       console.log('Error checking camera permission:', error);
     }
-
     const option = {
       mediaType: 'photo',
       quality: 1,
     };
-    // =======> CAMERA <=========
-    // launchCamera(option, res => {
-    //   if (res.didCancel) {
-    //     console.log('User cancel');
-    //   } else if (res.errorCode) {
-    //     console.log(res.errorMessage);
-    //   } else {
-    //     // const data = res.assets[0];
-    //     // console.log(data);
-    //     setFileImage(res.assets[0]);
-    //   }
-    // });
-    // =======> GALERY <=========
-    launchImageLibrary(option, res => {
-      if (res.didCancel) {
-        console.log('User cancel');
-      } else if (res.errorCode) {
-        console.log(res.errorMessage);
-      } else {
-        const data = res.assets[0];
-        console.log(data);
-        setFileImage(res.assets[0]);
-      }
-    });
+    if (method === 'camera') {
+      // =======> CAMERA <=========
+      launchCamera(option, res => {
+        if (res.didCancel) {
+          console.log('User cancel');
+        } else if (res.errorCode) {
+          console.log(res.errorMessage);
+        } else {
+          // const data = res.assets[0];
+          console.log(res.assets);
+          console.log('FILE IMAGE', res.assets);
+          setFileImage(res.assets[0]);
+        }
+      });
+    } else {
+      // =======> GALERY <=========
+      launchImageLibrary(option, res => {
+        if (res.didCancel) {
+          console.log('User cancel');
+        } else if (res.errorCode) {
+          console.log(res.errorMessage);
+        } else {
+          const data = res.assets;
+          console.log('FILE IMAGE', data);
+          setFileImage(res.assets[0]);
+        }
+      });
+    }
   };
 
   return (
@@ -135,9 +138,27 @@ const CreateProduct = () => {
                 style={styles.imageProd}
               />
             )}
-            <Pressable onPress={openCamera} style={styles.btnEdit}>
-              <FontAwesomeIcon name="pencil" size={24} color="white" />
-            </Pressable>
+            {/* <Pressable onPress={openCamera} style={styles.btnEdit}>
+              <FontAwesomeIcon name="plus" size={24} color="white" />
+            </Pressable> */}
+            <Box alignItems="flex-end">
+              <Menu
+                w="190"
+                trigger={triggerProps => {
+                  return (
+                    <Pressable {...triggerProps} style={styles.btnEdit}>
+                      <FontAwesomeIcon name="plus" size={24} color="white" />
+                    </Pressable>
+                  );
+                }}>
+                <Menu.Item onPress={() => handleInputImage('camera')}>
+                  Camera
+                </Menu.Item>
+                <Menu.Item onPress={() => handleInputImage('galery')}>
+                  Galery
+                </Menu.Item>
+              </Menu>
+            </Box>
           </View>
           <View style={{marginBottom: 24, width: '100%'}}>
             <Text style={styles.textLabel}>Product Name :</Text>
@@ -220,9 +241,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   imageProd: {
-    width: 180,
-    height: 180,
-    borderRadius: 20,
+    width: 240,
+    height: 240,
+    borderRadius: 36,
   },
   btnEdit: {
     width: 48,

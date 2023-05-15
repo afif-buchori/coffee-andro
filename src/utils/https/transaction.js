@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import axios from 'axios';
+import {SERVER_HOST} from '@env';
 
-const baseUrl = 'https://coffee-shop-taupe.vercel.app';
+const baseUrl = SERVER_HOST;
 
 export const addTransactions = (token, data, controller) => {
   const url = `${baseUrl}/transactions`;

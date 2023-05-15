@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import axios from 'axios';
+import {SERVER_HOST} from '@env';
 
-// const baseUrl = process.env.REACT_APP_SERVER_HOST;
-const baseUrl = 'https://coffee-shop-taupe.vercel.app';
+const baseUrl = SERVER_HOST;
 
 export const fetchLogin = (body, controller) => {
   const url = `${baseUrl}/auth`;
@@ -55,6 +55,14 @@ export const updateProfile = (token, file, body, controller) => {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'multipart/form-data',
     },
+  });
+};
+
+export const editPassword = (token, body, controller) => {
+  const url = `${baseUrl}/auth`;
+  return axios.patch(url, body, {
+    signal: controller.signal,
+    headers: {Authorization: `Bearer ${token}`},
   });
 };
 

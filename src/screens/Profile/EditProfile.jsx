@@ -7,14 +7,7 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import {
-  NativeBaseProvider,
-  Radio,
-  Stack,
-  Box,
-  Menu,
-  isEmptyObj,
-} from 'native-base';
+import {NativeBaseProvider, Radio, Stack, Box, Menu} from 'native-base';
 import React, {useEffect, useMemo, useState} from 'react';
 import ButtonSecondary from '../../components/ButtonSecondary';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -210,12 +203,6 @@ const EditProfile = () => {
           <ScrollView style={{flex: 1}}>
             <View style={styles.screen}>
               <View style={{marginBottom: 24}}>
-                {/* {data.profile_picture ? (
-                  <Image
-                    source={{uri: data.profile_picture}}
-                    style={styles.imageProd}
-                  />
-                ) : ( */}
                 <Image
                   source={
                     fileImage !== ''
@@ -224,9 +211,8 @@ const EditProfile = () => {
                       ? {uri: data.profile_picture}
                       : require('../../assets/images/ph-users.png')
                   }
-                  style={styles.imageProd}
+                  style={styles.imageUser}
                 />
-                {/* )} */}
 
                 <Box alignItems="flex-end">
                   <Menu
@@ -388,15 +374,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: '10%',
     paddingVertical: 20,
   },
-  imageProd: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+  imageUser: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
   },
   btnEdit: {
-    width: 36,
-    height: 36,
-    borderRadius: 17,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#6A4029',
     justifyContent: 'center',
     alignItems: 'center',
