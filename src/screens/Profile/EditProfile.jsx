@@ -157,15 +157,9 @@ const EditProfile = () => {
       gender,
       email,
       phone,
-      birth_date: date,
+      birth_date: date.toLocaleDateString(),
       address,
     };
-    // console.log(userData);
-    // if (isEmptyObj(userData)) {
-    //   setToastInfo({msg: 'Nothing changed in your profile', display: 'error'});
-    //   setToast(true);
-    //   return;
-    // }
     setFetchLoading(true);
     try {
       const result = await updateProfile(
@@ -186,7 +180,7 @@ const EditProfile = () => {
       setFetchLoading(false);
     }
   };
-
+  console.log(date.toLocaleDateString());
   return (
     <>
       {isLoading ? (

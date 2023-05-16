@@ -13,7 +13,7 @@ const CustomDrawer = props => {
   // const {width} = Dimensions.get('screen');
   const [showModal, setShowModal] = useState(false);
   const userRedux = useSelector(state => state.user);
-  // console.log(userRedux);
+  // console.log(userRedux.role);
   return (
     <DrawerContentScrollView {...props}>
       <Logout showModal={showModal} closeModal={() => setShowModal(false)} />
@@ -36,7 +36,10 @@ const CustomDrawer = props => {
         <DrawerItemList {...props} />
         <Pressable
           onPress={() => setShowModal(true)}
-          style={showModal ? styles.btnLogClick : styles.btnLogout}>
+          // style={showModal ? styles.btnLogClick : styles.btnLogout}>
+          style={
+            userRedux.role === 2 ? styles.btnLogoutAdmin : styles.btnLogout
+          }>
           <Text style={showModal ? styles.textLogClick : styles.textLogout}>
             Sign-Out
           </Text>
@@ -86,6 +89,16 @@ const styles = StyleSheet.create({
   },
   btnLogout: {
     marginTop: 200,
+    marginHorizontal: 11,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  btnLogoutAdmin: {
+    marginTop: 140,
     marginHorizontal: 11,
     paddingHorizontal: 12,
     paddingVertical: 12,

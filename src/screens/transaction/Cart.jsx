@@ -10,7 +10,7 @@ const Cart = () => {
   const navigation = useNavigation();
   const cartRedux = useSelector(state => state.cart);
   const {shoppingCart} = cartRedux;
-  console.log(shoppingCart);
+  // console.log(shoppingCart);
 
   let subtotal = 0;
   shoppingCart.forEach(item => {

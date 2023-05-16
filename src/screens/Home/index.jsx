@@ -107,7 +107,7 @@ const Home = () => {
 
               {userRedux.role === 2 && (
                 <Pressable
-                  onPress={() => navigation.navigate('CreateProduct')}
+                  onPress={() => navigation.navigate('AdminNavigator')}
                   style={styles.btnAdd}>
                   <FontAwesomeIcon name="plus" size={22} color="white" />
                 </Pressable>

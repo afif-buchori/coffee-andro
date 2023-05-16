@@ -47,7 +47,7 @@ const Card = ({data, reff}) => {
       <ModalMsg
         showModal={showModal}
         closeModal={() => setShowModal(false)}
-        msg="Are you sure to delete the selected items?"
+        msg="Are you sure want to delete the selected items?"
         onSubmit={handleDelete}
       />
       <View style={styles.cardContainer}>

@@ -47,10 +47,10 @@ const Profile = () => {
     setLoading(true);
     try {
       const result = await getProfile(userRedux.id, controller);
-      console.log('DATA PROFILE', result.data.data);
+      // console.log('DATA PROFILE', result.data.data);
       setData(result.data.data);
       const getHistoryOrder = await getHistory(userRedux.token, controller);
-      console.log('HISTORY ORDER', getHistoryOrder.data.data);
+      // console.log('HISTORY ORDER', getHistoryOrder.data.data);
       setDataOrder(getHistoryOrder.data.data);
       setLoading(false);
     } catch (error) {

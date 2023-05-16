@@ -15,11 +15,6 @@ export const getProductsDetails = (params, controller) => {
   return axios.get(url, params, {signal: controller.signal});
 };
 
-export const getPromos = controller => {
-  const url = baseUrl + '/promos';
-  return axios.get(url, {signal: controller.signal});
-};
-
 export const createProduct = (token, file, body, controller) => {
   const url = baseUrl + '/products';
   const formData = new FormData();
@@ -40,4 +35,44 @@ export const createProduct = (token, file, body, controller) => {
       'Content-Type': 'multipart/form-data',
     },
   });
+};
+
+export const updateProduct = (token, id, file, body, controller) => {
+  const url = `${baseUrl}/products/${id}`;
+  const formData = new FormData();
+  if (file !== '') {
+    formData.append('image', {
+      uri: file.uri,
+      name: file.fileName,
+      type: file.type,
+    });
+  }
+  Object.entries(body).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
+  return axios.patch(url, formData, {
+    signal: controller.signal,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+export const deletingProduct = (token, id, controller) => {
+  const url = `${baseUrl}/products/${id}`;
+  return axios.delete(url, {
+    signal: controller.signal,
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
+export const getPromos = controller => {
+  const url = baseUrl + '/promos';
+  return axios.get(url, {signal: controller.signal});
+};
+
+export const addPromos = (body, controller) => {
+  const url = baseUrl + '/promos';
+  return axios.post(url, body, {signal: controller.signal});
 };

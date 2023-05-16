@@ -6,13 +6,14 @@ import {Pressable, View} from 'react-native';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Welcome from './src/screens/Welcome';
 import Auth from './src/screens/Auth';
 import Signup from './src/screens/Auth/Signup';
 import Login from './src/screens/Auth/Login';
 import Home from './src/screens/Home';
-import {Provider} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import store, {persistor} from './src/redux/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import Forgot from './src/screens/Auth/Forgot';
@@ -23,15 +24,54 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Cart from './src/screens/transaction/Cart';
 import Products from './src/screens/Product';
 import Delivery from './src/screens/transaction/Delivery';
-import Logout from './src/screens/Auth/Logout';
 import Payment from './src/screens/transaction/Payment';
 import EditProfile from './src/screens/Profile/EditProfile';
 import CustomDrawer from './src/components/CustomDrawer';
 import MySplashScreen from './src/components/MySplashScreen';
 import History from './src/screens/transaction/History';
 import CreateProduct from './src/screens/Product/CreateProduct';
+import EditProduct from './src/screens/Product/EditProduct';
+import CreatePromo from './src/screens/Promo/CreatePromo';
+
+const AdminNavigator = () => {
+  const {Navigator, Screen} = createBottomTabNavigator();
+  return (
+    <Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#FFBA33',
+        tabBarInactiveTintColor: 'black',
+        tabBarStyle: {backgroundColor: '#6A4029', height: 86},
+        tabBarItemStyle: {marginBottom: 6, marginTop: 6},
+        tabBarLabelStyle: {fontFamily: 'Poppins-Regular', fontSize: 14},
+      }}>
+      <Screen
+        name="CreateProduct"
+        component={CreateProduct}
+        options={{
+          title: 'New Product',
+          tabBarIcon: ({color}) => (
+            <Ionicons name="add-circle-outline" size={44} color={color} />
+          ),
+        }}
+      />
+      <Screen
+        name="CreatePromo"
+        component={CreatePromo}
+        options={{
+          title: 'New Promo',
+          tabBarActiveTintColor: '#FFBA33',
+          tabBarIcon: ({color}) => (
+            <Ionicons name="pricetags-outline" size={32} color={color} />
+          ),
+        }}
+      />
+    </Navigator>
+  );
+};
 
 const DrawerNavigator = () => {
+  const userRedux = useSelector(state => state.user);
   const navigation = useNavigation();
   const {Navigator, Screen} = createDrawerNavigator();
   return (
@@ -123,17 +163,19 @@ const DrawerNavigator = () => {
           ),
         }}
       />
-      {/* <Screen
-        name="Logout"
-        component={Logout}
-        options={{
-          title: 'Sign-Out',
-          headerShown: false,
-          drawerIcon: ({color}) => (
-            <Ionicons name="arrow-forward-outline" size={24} color={color} />
-          ),
-        }}
-      /> */}
+      {userRedux.role === 2 && (
+        <Screen
+          name="AdminNavigator"
+          component={AdminNavigator}
+          options={{
+            title: 'Admin Page',
+            headerShown: true,
+            drawerIcon: ({color}) => (
+              <Ionicons name="create-outline" size={24} color={color} />
+            ),
+          }}
+        />
+      )}
     </Navigator>
   );
 };
@@ -189,11 +231,33 @@ const StackNavigator = () => {
           },
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="CreateProduct"
         component={CreateProduct}
         options={{
           title: 'Create Product',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+        }}
+      /> */}
+      {/* <Stack.Screen
+        name="CreatePromo"
+        component={CreatePromo}
+        options={{
+          title: 'Create Promo',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+        }}
+      /> */}
+      <Stack.Screen
+        name="EditProduct"
+        component={EditProduct}
+        options={{
+          title: '',
           headerShown: true,
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',

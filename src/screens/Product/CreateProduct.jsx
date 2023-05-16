@@ -64,7 +64,7 @@ const CreateProduct = () => {
         form,
         controller,
       );
-      console.log(result.data.data[0]);
+      // console.log(result.data.data[0]);
       if (result.status === 201) {
         setToastInfo({msg: 'Create Success', display: 'success'});
         setToast(true);
@@ -230,6 +230,7 @@ const CreateProduct = () => {
               style={globalStyle.inputLine}
               value={price}
               onChangeText={text => setPrice(text)}
+              keyboardType="number-pad"
               placeholder="Enter price"
               placeholderTextColor={'black'}
             />

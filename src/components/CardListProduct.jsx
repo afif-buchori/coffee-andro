@@ -20,7 +20,9 @@ const CardListProduct = props => {
         />
       )}
       {userState.role === 2 && (
-        <Pressable style={styles.btnEdit}>
+        <Pressable
+          onPress={() => navigation.navigate('EditProduct', {id: props.prodId})}
+          style={styles.btnEdit}>
           <FontAwesomeIcon name="pencil" size={22} color="white" />
         </Pressable>
       )}
