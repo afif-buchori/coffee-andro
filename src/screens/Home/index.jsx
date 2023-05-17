@@ -40,7 +40,7 @@ const Home = () => {
       // console.log(result.data.data);
       setDataProduct(result.data.data);
       const promos = await getPromos(controller);
-      // console.log("DATA PROMO", promos.data.data);
+      // console.log('DATA PROMO', promos.data.data);
       setDataPromo(promos.data.data);
       setNoData(false);
       setLoading(false);
@@ -65,12 +65,12 @@ const Home = () => {
     //   unsubFocus();
     //   unsubBlur();
     // };
-  }, [category, searchInput, sort]);
+  }, [category]);
 
-  const handleSearch = debounce(text => {
-    setPage(1);
-    setSearchInput(text);
-  }, 700);
+  // const handleSearch = debounce(text => {
+  //   setPage(1);
+  //   setSearchInput(text);
+  // }, 700);
   const handleCategory = info => {
     setPage(1);
     setCategory(info);
@@ -97,7 +97,7 @@ const Home = () => {
                 <TextInput
                   style={{fontWeight: 'bold', width: '100%'}}
                   placeholder="Search"
-                  onChangeText={handleSearch}
+                  // onChangeText={handleSearch}
                   placeholderTextColor={'black'}
                   onFocus={() =>
                     navigation.navigate('Products', {category, search: true})
@@ -246,10 +246,7 @@ const Home = () => {
                 }}>
                 Promo
               </Text>
-              <Pressable
-                onPress={() =>
-                  navigation.navigate('Products', {category, page: 1})
-                }>
+              <Pressable onPress={() => navigation.navigate('Promos')}>
                 <Text
                   style={{
                     color: '#6A4029',
@@ -265,7 +262,7 @@ const Home = () => {
                 {dataPromo.map(product => (
                   <CardProducts
                     key={product.id}
-                    prodId={product.id}
+                    prodId={product.product_id}
                     prodName={product.prod_name}
                     image={product.image}
                     price={product.price}

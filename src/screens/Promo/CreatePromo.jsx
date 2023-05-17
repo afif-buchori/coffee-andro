@@ -20,21 +20,32 @@ import {useRoute} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import globalStyle from '../../styles/globalStyle';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import ButtonSecondary from '../../components/ButtonSecondary';
+import BtnLoadingSec from '../../components/BtnLoadingSec';
+import ButtonPrimary from '../../components/ButtonPrimary';
+import {useSelector} from 'react-redux';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CreatePromo = () => {
   const navigation = useNavigation();
+  const userRedux = useSelector(state => state.user);
   const controller = useMemo(() => new AbortController(), []);
   const [dataProduct, setDataProduct] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [noData, setNoData] = useState(false);
   const [isPick, setPick] = useState(false);
 
+  const [fetchLoading, setFetchLoad] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
+
+  const [discPrice, setDiscPrice] = useState(0);
   const [prodPick, setProdPick] = useState({});
   const [discount, setDiscount] = useState('');
   const [couponCode, setCouponCode] = useState('');
-  const [expDate, setExpDate] = useState('');
   const [descript, setDescript] = useState('');
+  const [expDate, setExpDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
 
   const searching = async text => {
     setLoading(true);
@@ -71,12 +82,40 @@ const CreatePromo = () => {
     setPick(true);
   };
 
+  const onChangeDiscount = text => {
+    if (parseInt(text) > 100) return;
+    setDiscount(text);
+    const newPrice = (parseInt(prodPick.price) * parseInt(text)) / 100;
+    if (parseInt(text) > 0)
+      return setDiscPrice(parseInt(prodPick.price) - newPrice);
+    setDiscPrice('');
+  };
+
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || expDate;
+    setShowPicker(false);
+    setExpDate(currentDate);
+    // console.log(currentDate);
+  };
+
   const handleSubmit = async () => {
+    const form = {
+      product_id: prodPick.id,
+      coupon_code: couponCode,
+      discount: parseInt(discount),
+      description: descript,
+      expired_at: expDate.toLocaleDateString(),
+    };
+    // console.log(form);
+    setFetchLoad(true);
     try {
-      const result = await addPromos(form, controller);
-      console.log(result);
+      const result = await addPromos(userRedux.token, form, controller);
+      // console.log(result);
+      setFetchLoad(false);
+      if (result.status === 201) setSuccess(true);
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
+      setFetchLoad(false);
     }
   };
 
@@ -105,16 +144,28 @@ const CreatePromo = () => {
               </Pressable>
             </View>
             <Text style={styles.textName}>{prodPick.prod_name}</Text>
-            <Text style={styles.textPrice}>
-              IDR {prodPick.price.toLocaleString('id-ID')}
-            </Text>
+            {discPrice === '' || discPrice === 0 ? (
+              <Text style={styles.textPrice}>
+                IDR {prodPick.price.toLocaleString('id-ID')}
+              </Text>
+            ) : (
+              <View style={{position: 'relative'}}>
+                <Text style={styles.onDiscount}>
+                  IDR {prodPick.price.toLocaleString('id-ID')}
+                </Text>
+                <View style={styles.lineDiscount}></View>
+                <Text style={styles.textDiscPrice}>
+                  IDR {discPrice.toLocaleString('id-ID')}
+                </Text>
+              </View>
+            )}
             <View style={{marginBottom: 24, width: '100%'}}>
               <Text style={styles.textLabel}>Discount :</Text>
               <TextInput
                 style={globalStyle.inputLine}
                 placeholder="Enter discount"
                 value={discount}
-                onChangeText={text => setDiscount(text)}
+                onChangeText={onChangeDiscount}
                 placeholderTextColor={'black'}
                 keyboardType="number-pad"
               />
@@ -129,16 +180,27 @@ const CreatePromo = () => {
                 placeholderTextColor={'black'}
               />
             </View>
+
             <View style={{marginBottom: 24, width: '100%'}}>
               <Text style={styles.textLabel}>Expired Date :</Text>
-              <TextInput
-                style={globalStyle.inputLine}
-                placeholder="Enter expired Date"
-                value={expDate}
-                onChangeText={text => setExpDate(text)}
-                placeholderTextColor={'black'}
-              />
+              <Pressable
+                onPress={() => setShowPicker(true)}
+                style={styles.dateStyle}>
+                <Text style={styles.textDate}>
+                  {expDate.toLocaleDateString('id-ID')}
+                </Text>
+                <FontAwesomeIcon name="calendar" size={22} color="#9F9F9F" />
+              </Pressable>
+              {showPicker && (
+                <DateTimePicker
+                  value={expDate}
+                  mode="date"
+                  display="default"
+                  onChange={onChangeDate}
+                />
+              )}
             </View>
+
             <View style={{marginBottom: 24, width: '100%'}}>
               <Text style={styles.textLabel}>Description :</Text>
               <TextInput
@@ -149,7 +211,19 @@ const CreatePromo = () => {
                 placeholderTextColor={'black'}
               />
             </View>
-            <ButtonSecondary title="Create Promo" />
+            {isSuccess ? (
+              <ButtonPrimary
+                title="Go Home"
+                handlePress={() => navigation.replace('Drawer')}
+              />
+            ) : fetchLoading ? (
+              <BtnLoadingSec />
+            ) : (
+              <ButtonSecondary
+                title="Create Promo"
+                handlePress={handleSubmit}
+              />
+            )}
           </View>
         ) : (
           <>
@@ -203,6 +277,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
     color: '#9F9F9F',
   },
+  dateStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    paddingVertical: 10,
+  },
+  textDate: {
+    fontFamily: 'Poppins-Regular',
+    color: 'black',
+  },
   notFound: {
     fontFamily: 'Poppins-Bold',
     fontSize: 28,
@@ -246,6 +332,29 @@ const styles = StyleSheet.create({
     color: '#6A4029',
     fontSize: 20,
     marginBottom: 20,
+  },
+  onDiscount: {
+    fontFamily: 'Poppins-Bold',
+    color: '#9F9F9F',
+    fontSize: 20,
+    marginBottom: 20,
+  },
+  textDiscPrice: {
+    fontFamily: 'Poppins-Bold',
+    color: '#6A4029',
+    fontSize: 20,
+    position: 'absolute',
+    top: 20,
+    left: 20,
+  },
+  lineDiscount: {
+    position: 'absolute',
+    width: 120,
+    height: 2,
+    borderBottomWidth: 2,
+    borderBottomColor: '#9F9F9F',
+    top: 14,
+    left: -6,
   },
 });
 

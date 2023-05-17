@@ -27,7 +27,10 @@ const CustomDrawer = props => {
           />
         )}
         {userRedux.token ? (
-          <Text style={styles.textName}>{userRedux.phone}</Text>
+          <>
+            <Text style={styles.textName}>{userRedux.displayName}</Text>
+            <Text style={styles.textName}>{userRedux.phone}</Text>
+          </>
         ) : (
           <Text style={styles.textName}>Not Login</Text>
         )}

@@ -11,14 +11,16 @@ import {useRoute} from '@react-navigation/native';
 import {getProductsDetails} from '../../utils/https/product';
 import LoaderScreen from '../../components/LoaderScreen';
 import ButtonSecondary from '../../components/ButtonSecondary';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {cartAction} from '../../redux/slices/cart';
 import ToastFetching from '../../components/ToastFetching';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 const ProductDetails = () => {
   const route = useRoute();
   const {id} = route.params;
   const dispatch = useDispatch();
+  const userRedux = useSelector(state => state.user);
   const controller = useMemo(() => new AbortController(), []);
   const [isLoading, setLoading] = useState(true);
   const [isToast, setToast] = useState(false);
@@ -72,6 +74,16 @@ const ProductDetails = () => {
             onClose={() => setToast(false)}
             info={toastInfo}
           />
+
+          {userRedux.role === 2 && (
+            <Pressable
+              onPress={() =>
+                navigation.navigate('EditProduct', {id: props.prodId})
+              }
+              style={styles.btnEdit}>
+              <FontAwesomeIcon name="pencil" size={22} color="white" />
+            </Pressable>
+          )}
           <View style={styles.container}>
             {dataProd.image ? (
               <Image source={{uri: dataProd.image}} style={styles.imageProd} />
@@ -212,6 +224,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Poppins-ExtraBold',
     color: '#FFBA33',
+  },
+  btnEdit: {
+    width: 46,
+    height: 46,
+    borderRadius: 30,
+    backgroundColor: '#6A4029',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 12,
+    top: 12,
   },
 });
 

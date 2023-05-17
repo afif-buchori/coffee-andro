@@ -11,7 +11,7 @@ import {NativeBaseProvider, Radio, Stack, Box, Menu} from 'native-base';
 import React, {useEffect, useMemo, useState} from 'react';
 import ButtonSecondary from '../../components/ButtonSecondary';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import LoaderSpin from '../../components/LoaderSpin';
 import {getProfile, updateProfile} from '../../utils/https/auth';
 import globalStyle from '../../styles/globalStyle';
@@ -23,8 +23,10 @@ import {useNavigation} from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {PermissionsAndroid} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {userAction} from '../../redux/slices/auth';
 
 const EditProfile = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const userRedux = useSelector(state => state.user);
   // console.log('DATA REDUX USER', userRedux);
@@ -61,14 +63,14 @@ const EditProfile = () => {
       const result = await getProfile(userRedux.id, controller);
       // console.log('DATA PROFILE', result.data.data);
       setData(result.data.data);
-      setDisName(result.data.data.display_name);
-      setFirstName(result.data.data.first_name);
-      setLastName(result.data.data.last_name);
-      setGender(result.data.data.gender);
-      setEmail(result.data.data.email);
-      setPhone(result.data.data.phone);
-      setDate(new Date(result.data.data.birth_date));
-      setAddress(result.data.data.address);
+      setDisName(result.data.data.display_name || '');
+      setFirstName(result.data.data.first_name || '');
+      setLastName(result.data.data.last_name || '');
+      setGender(result.data.data.gender || '');
+      setEmail(result.data.data.email || '');
+      setPhone(result.data.data.phone || '');
+      setDate(new Date(result.data.data.birth_date) || new Date());
+      setAddress(result.data.data.address || '');
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -150,16 +152,25 @@ const EditProfile = () => {
   // console.log(date);
 
   const handleEditProfile = async () => {
-    const userData = {
-      display_name: disName,
-      first_name: firstName,
-      last_name: lastName,
-      gender,
-      email,
-      phone,
-      birth_date: date.toLocaleDateString(),
-      address,
-    };
+    const userData = {};
+    if (disName !== '') userData.display_name = disName;
+    if (firstName !== '') userData.last_name = firstName;
+    if (lastName !== '') userData.last_name = lastName;
+    if (gender !== '') userData.gender = gender;
+    if (email !== '') userData.phone = phone;
+    if (date !== new Date()) userData.birth_date = date.toLocaleDateString();
+    if (address !== '') userData.address = address;
+    // const userData = {
+    //   display_name: disName,
+    //   first_name: firstName,
+    //   last_name: lastName,
+    //   gender,
+    //   email,
+    //   phone,
+    //   birth_date: date.toLocaleDateString(),
+    //   address,
+    // };
+    console.log('BODY', userData);
     setFetchLoading(true);
     try {
       const result = await updateProfile(
@@ -170,6 +181,7 @@ const EditProfile = () => {
       );
       console.log('HASIL UPDATE', result);
       if (result.status === 200) {
+        dispatch(userAction.editProfile(result.data.data[0]));
         setToastInfo({msg: 'Update Success', display: 'success'});
         setToast(true);
         setSuccess(true);
@@ -180,7 +192,7 @@ const EditProfile = () => {
       setFetchLoading(false);
     }
   };
-  console.log(date.toLocaleDateString());
+
   return (
     <>
       {isLoading ? (
@@ -308,7 +320,7 @@ const EditProfile = () => {
                   onPress={() => setShowPicker(true)}
                   style={styles.dateStyle}>
                   <Text style={styles.textDate}>
-                    {date.toLocaleDateString()}
+                    {date.toLocaleDateString('id-ID')}
                   </Text>
                   <FontAwesomeIcon name="calendar" size={22} color="#9F9F9F" />
                 </Pressable>

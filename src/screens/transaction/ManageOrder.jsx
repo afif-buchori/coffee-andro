@@ -5,11 +5,18 @@ import {
   Image,
   StyleSheet,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import {deleteTransaction, getHistory} from '../../utils/https/transaction';
+import {
+  changeOrderDone,
+  deleteTransaction,
+  getAllOrder,
+  getDoneOrder,
+  getHistory,
+} from '../../utils/https/transaction';
 import globalStyle from '../../styles/globalStyle';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import ButtonSecondary from '../../components/ButtonSecondary';
@@ -20,17 +27,22 @@ import LoaderScreen from '../../components/LoaderScreen';
 const Card = ({data, reff}) => {
   const {token} = useSelector(state => state.user);
   const controller = useMemo(() => new AbortController(), []);
+  const [isLoading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  // console.log("STATUS ORDER",data.pay_status_id);
 
-  const handleDelete = async () => {
+  const handleDone = async () => {
     console.log(data.id);
+    setLoading(true);
     try {
-      const result = await deleteTransaction(token, data.id, controller);
+      const result = await changeOrderDone(token, data.id, controller);
       console.log(result);
       reff();
+      setLoading(false);
     } catch (error) {
       console.log(error);
       reff();
+      setLoading(false);
     }
   };
 
@@ -43,52 +55,56 @@ const Card = ({data, reff}) => {
   };
 
   return (
-    <>
-      <ModalMsg
-        showModal={showModal}
-        closeModal={() => setShowModal(false)}
-        msg="Are you sure want to delete the selected items?"
-        onSubmit={handleDelete}
-      />
-      <View style={styles.cardContainer}>
-        {data.image ? (
-          <Image source={{uri: data.image}} style={styles.imageProd} />
-        ) : (
-          <Image
-            source={require('../../assets/images/ph-product.png')}
-            style={styles.imageProd}
-          />
-        )}
-        <View style={{marginLeft: 130}}>
-          <Text style={styles.titleProd}>{lengthText(data.prod_name)}</Text>
-          <Text style={styles.textPrice}>{data.price}</Text>
-          <Text style={styles.textInfo}>
-            {data.method === 'Door Delivery' ? 'Door Deliv' : data.method} at{' '}
-            {new Date(data.created_at).toLocaleDateString()}
-          </Text>
-        </View>
-        <Pressable onPress={() => setShowModal(true)} style={styles.btnDel}>
-          <IonIcon name="trash" size={22} color="white" />
-        </Pressable>
+    <View style={styles.cardContainer}>
+      {data.image ? (
+        <Image source={{uri: data.image}} style={styles.imageProd} />
+      ) : (
+        <Image
+          source={require('../../assets/images/ph-product.png')}
+          style={styles.imageProd}
+        />
+      )}
+      <View style={{marginLeft: 130}}>
+        <Text style={styles.titleProd}>{lengthText(data.prod_name)}</Text>
+        <Text style={styles.textPrice}>{data.price}</Text>
+        <Text style={styles.textInfo}>
+          {data.method === 'Door Delivery' ? 'Door Deliv' : data.method} at{' '}
+          {new Date(data.created_at).toLocaleDateString()}
+        </Text>
       </View>
-    </>
+      {data.pay_status_id !== 2 && isLoading ? (
+        <Pressable style={styles.btnDel}>
+          <ActivityIndicator size="large" color="#FFBA33" />
+        </Pressable>
+      ) : (
+        data.pay_status_id !== 2 && (
+          <Pressable onPress={handleDone} style={styles.btnDel}>
+            <IonIcon name="checkmark-done-outline" size={22} color="white" />
+          </Pressable>
+        )
+      )}
+    </View>
   );
 };
 
-const History = () => {
+const ManageOrder = () => {
   const userRedux = useSelector(state => state.user);
   // console.log('DATA REDUX USER', userRedux);
+  // console.log('TOKEN', userRedux.token);
   const navigation = useNavigation();
   const controller = useMemo(() => new AbortController(), []);
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
+  const [dataDone, setDataDone] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
 
   const fetching = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
-      const result = await getHistory(userRedux.token, controller);
+      const result = await getAllOrder(userRedux.token, controller);
       setData(result.data.data);
+      const resDone = await getDoneOrder(userRedux.token, controller);
+      setDataDone(resDone.data.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -96,7 +112,11 @@ const History = () => {
   };
 
   useEffect(() => {
+    const unsubFocus = navigation.addListener('focus', () => {
+      fetching();
+    });
     fetching();
+    return unsubFocus;
   }, [refresh]);
 
   // console.log(data);
@@ -113,8 +133,20 @@ const History = () => {
             paddingVertical: 20,
           }}>
           <View style={{marginBottom: 40}}>
+            <Text style={[globalStyle.textBold, {fontSize: 24}]}>Just now</Text>
             {data.length >= 1 &&
               data.map(item => (
+                <Card
+                  key={item.id}
+                  data={item}
+                  reff={() => setRefresh(!refresh)}
+                />
+              ))}
+          </View>
+          <View style={{paddingTop: 40, marginBottom: 40}}>
+            <Text style={[globalStyle.textBold, {fontSize: 24}]}>Finished</Text>
+            {dataDone.length >= 1 &&
+              dataDone.map(item => (
                 <Card
                   key={item.id}
                   data={item}
@@ -195,4 +227,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default History;
+export default ManageOrder;

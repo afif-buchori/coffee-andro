@@ -72,7 +72,18 @@ export const getPromos = controller => {
   return axios.get(url, {signal: controller.signal});
 };
 
-export const addPromos = (body, controller) => {
+export const addPromos = (token, body, controller) => {
   const url = baseUrl + '/promos';
-  return axios.post(url, body, {signal: controller.signal});
+  return axios.post(url, body, {
+    signal: controller.signal,
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
+export const deletingPromo = (token, id, controller) => {
+  const url = baseUrl + '/promos/delete/' + id;
+  return axios.delete(url, {
+    signal: controller.signal,
+    headers: {Authorization: `Bearer ${token}`},
+  });
 };

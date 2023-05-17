@@ -32,6 +32,9 @@ import History from './src/screens/transaction/History';
 import CreateProduct from './src/screens/Product/CreateProduct';
 import EditProduct from './src/screens/Product/EditProduct';
 import CreatePromo from './src/screens/Promo/CreatePromo';
+import ManageOrder from './src/screens/transaction/ManageOrder';
+import AllPromo from './src/screens/Promo';
+import EditPromo from './src/screens/Promo/EditPromo';
 
 const AdminNavigator = () => {
   const {Navigator, Screen} = createBottomTabNavigator();
@@ -132,21 +135,40 @@ const DrawerNavigator = () => {
           ),
         }}
       />
-      <Screen
-        name="Cart"
-        component={Cart}
-        options={{
-          headerShown: true,
-          headerStyle: {
-            backgroundColor: 'rgba(255, 255, 255, 0)',
-          },
-          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
-          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
-          drawerIcon: ({color}) => (
-            <Ionicons name="cart-outline" size={24} color={color} />
-          ),
-        }}
-      />
+      {userRedux.role === 2 ? (
+        <Screen
+          name="ManageOrder"
+          component={ManageOrder}
+          options={{
+            title: 'Manage Order',
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: 'rgba(255, 255, 255, 0)',
+            },
+            headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+            headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
+            drawerIcon: ({color}) => (
+              <Ionicons name="cart-outline" size={24} color={color} />
+            ),
+          }}
+        />
+      ) : (
+        <Screen
+          name="Cart"
+          component={Cart}
+          options={{
+            headerShown: true,
+            headerStyle: {
+              backgroundColor: 'rgba(255, 255, 255, 0)',
+            },
+            headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+            headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
+            drawerIcon: ({color}) => (
+              <Ionicons name="cart-outline" size={24} color={color} />
+            ),
+          }}
+        />
+      )}
       <Screen
         name="Products"
         component={Products}
@@ -225,6 +247,28 @@ const StackNavigator = () => {
         component={Products}
         options={{
           title: 'All Products',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Promos"
+        component={AllPromo}
+        options={{
+          title: 'All Promo',
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="EditPromo"
+        component={EditPromo}
+        options={{
+          title: 'Edit Promo',
           headerShown: true,
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',
