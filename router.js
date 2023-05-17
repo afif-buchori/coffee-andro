@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/no-unstable-nested-components */
@@ -112,7 +113,11 @@ const DrawerNavigator = () => {
           //   </Pressable>
           // ),
           headerRight: () => (
-            <Pressable onPress={() => navigation.navigate('Cart')}>
+            <Pressable
+              onPress={() => {
+                if (userRedux.role === 2) navigation.navigate('ManageOrder');
+                else navigation.navigate('Cart');
+              }}>
               <View style={{marginRight: '8%'}}>
                 <Ionicons name="cart-outline" size={24} color="black" />
               </View>
@@ -203,6 +208,7 @@ const DrawerNavigator = () => {
 };
 
 const StackNavigator = () => {
+  const userRedux = useSelector(state => state.user);
   const navigation = useNavigation();
   const Stack = createStackNavigator();
   return (
@@ -331,7 +337,11 @@ const StackNavigator = () => {
           headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
 
           headerRight: () => (
-            <Pressable onPress={() => navigation.navigate('Cart')}>
+            <Pressable
+              onPress={() => {
+                if (userRedux.role === 2) navigation.navigate('ManageOrder');
+                else navigation.navigate('Cart');
+              }}>
               <View style={{marginRight: '10%'}}>
                 <Ionicons name="cart-outline" size={24} color="black" />
               </View>

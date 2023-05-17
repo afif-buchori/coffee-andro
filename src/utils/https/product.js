@@ -80,6 +80,14 @@ export const addPromos = (token, body, controller) => {
   });
 };
 
+export const editingPromo = (token, id, body, controller) => {
+  const url = baseUrl + '/promos/' + id;
+  return axios.patch(url, body, {
+    signal: controller.signal,
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
 export const deletingPromo = (token, id, controller) => {
   const url = baseUrl + '/promos/delete/' + id;
   return axios.delete(url, {

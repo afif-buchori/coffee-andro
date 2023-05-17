@@ -12,7 +12,12 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {NativeBaseProvider, Box, Menu} from 'native-base';
 import {debounce} from 'lodash';
 
-import {addPromos, deletingPromo, getProducts} from '../../utils/https/product';
+import {
+  addPromos,
+  deletingPromo,
+  editingPromo,
+  getProducts,
+} from '../../utils/https/product';
 import LoaderSpin from '../../components/LoaderSpin';
 import CardListProduct from '../../components/CardListProduct';
 import {useRoute} from '@react-navigation/native';
@@ -70,22 +75,27 @@ const EditPromo = () => {
   const handleSubmit = async () => {
     const form = {
       product_id: data.product_id,
-      coupon_code: couponCode,
+      coupon_code: couponCode.toUpperCase(),
       discount: parseInt(discount),
       description: descript,
       expired_at: expDate.toLocaleDateString(),
     };
-    console.log(form);
-    // setFetchLoad(true);
-    // try {
-    //   const result = await addPromos(userRedux.token, form, controller);
-    //   // console.log(result);
-    //   setFetchLoad(false);
-    //   if (result.status === 201) setSuccess(true);
-    // } catch (error) {
-    //   console.log(error.response);
-    //   setFetchLoad(false);
-    // }
+    // console.log(form);
+    setFetchLoad(true);
+    try {
+      const result = await editingPromo(
+        userRedux.token,
+        data.id,
+        form,
+        controller,
+      );
+      // console.log(result);
+      setFetchLoad(false);
+      if (result.status === 200) setSuccess(true);
+    } catch (error) {
+      console.log(error.response);
+      setFetchLoad(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -207,7 +217,7 @@ const EditPromo = () => {
           ) : fetchLoading ? (
             <BtnLoadingSec />
           ) : (
-            <ButtonSecondary title="Create Promo" handlePress={handleSubmit} />
+            <ButtonSecondary title="Save Change" handlePress={handleSubmit} />
           )}
         </View>
       </View>

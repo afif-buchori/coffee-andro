@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     color: '#6A4029',
     alignSelf: 'center',
     textAlign: 'center',
-    marginTop: 60,
+    marginVertical: 60,
   },
   btnAdd: {
     width: 46,

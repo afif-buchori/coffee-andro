@@ -33,13 +33,22 @@ const userSlice = createSlice({
       };
     },
     editProfile: (prevState, action) => {
-      console.log('PAYLOAD UPDATE', action.payload);
+      // console.log('PAYLOAD UPDATE', action.payload);
       return {
         ...prevState,
         image: action.payload.profile_picture,
         displayName: action.payload.display_name,
         address: action.payload.address,
         // phone: action.payload.phone,
+      };
+    },
+    editDeliveryAddress: (prevState, action) => {
+      // console.log('PAYLOAD UPDATE', action.payload);
+      return {
+        ...prevState,
+        displayName: action.payload.name,
+        address: action.payload.address,
+        phone: action.payload.phone,
       };
     },
     authLogout: () => {

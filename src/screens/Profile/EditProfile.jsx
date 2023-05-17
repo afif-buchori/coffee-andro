@@ -342,6 +342,7 @@ const EditProfile = () => {
                   onChangeText={text => setAddress(text)}
                   placeholder="Enter your delivery address"
                   placeholderTextColor={'black'}
+                  multiline={true}
                 />
               </View>
               <View style={{marginHorizontal: 20, width: '100%'}}>
