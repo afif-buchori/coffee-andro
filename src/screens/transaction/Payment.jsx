@@ -48,7 +48,7 @@ const Payment = () => {
       payment_id: 1,
       products: dataShopping,
     };
-    console.log('BODY FETCHING', body);
+    // console.log('BODY FETCHING', body);
     setLoading(true);
     try {
       const result = await addTransactions(
@@ -56,16 +56,15 @@ const Payment = () => {
         body,
         controller,
       );
-      console.log('ADD TRANSACTION', result);
+      // console.log('ADD TRANSACTION', result.data.data[0].history_id);
       if (result.status === 201) {
         try {
-          const test = await notifee.displayNotification({
+          await notifee.displayNotification({
             android: {channelId: 'urgent'},
-            title: 'Bukan Coffee',
-            subtitle: 'Thank You',
+            title: 'Thank You',
+            subtitle: `ID = BC-${result.data.data[0].history_id}`,
             body: 'Your transaction order success',
           });
-          console.log(test);
         } catch (error) {
           console.log(error);
         }

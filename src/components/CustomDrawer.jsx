@@ -36,13 +36,12 @@ const CustomDrawer = props => {
 
   const backendNotif = async (title, body) => {
     try {
-      const test = await notifee.displayNotification({
+      await notifee.displayNotification({
         android: {channelId: 'urgent'},
         title: title || 'Bukan Coffee',
         // subtitle: 'Thank You',
         body: body || 'Your transaction order success',
       });
-      console.log(test);
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +57,7 @@ const CustomDrawer = props => {
         token_fcm: tokenFCM,
         user_id: userRedux.id,
       };
-      console.log(form);
+      // console.log(form);
       const resultFirebase = await loginFirebase(form, controller);
       console.log(resultFirebase.data);
     } catch (error) {
@@ -67,14 +66,19 @@ const CustomDrawer = props => {
   };
 
   const onMessageReceived = async remoteMsg => {
-    console.log(('FCM PAYLOAD', remoteMsg));
+    // console.log(('FCM PAYLOAD', remoteMsg));
     backendNotif(remoteMsg.notification.title, remoteMsg.notification.body);
   };
+
   useEffect(() => {
     createChannelNotif();
     onCreateTokenFCM();
-    messaging().onMessage(onMessageReceived);
+    const unsubscribe = messaging().onMessage(onMessageReceived);
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
   return (
     <DrawerContentScrollView {...props}>
       <Logout showModal={showModal} closeModal={() => setShowModal(false)} />
