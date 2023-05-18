@@ -19,6 +19,8 @@ import {useNavigation} from '@react-navigation/native';
 import {cartAction} from '../../redux/slices/cart';
 import ButtonPrimary from '../../components/ButtonPrimary';
 
+import notifee from '@notifee/react-native';
+
 const Payment = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -26,7 +28,7 @@ const Payment = () => {
   // console.log(route.params);
   const reduxStore = useSelector(state => state);
   const cartRedux = reduxStore.cart;
-  console.log('CART REDUX', cartRedux);
+  // console.log('CART REDUX', cartRedux);
   const controller = useMemo(() => new AbortController(), []);
   const [isLoading, setLoading] = useState(false);
   const [isToast, setToast] = useState(false);
@@ -56,6 +58,17 @@ const Payment = () => {
       );
       console.log('ADD TRANSACTION', result);
       if (result.status === 201) {
+        try {
+          const test = await notifee.displayNotification({
+            android: {channelId: 'urgent'},
+            title: 'Bukan Coffee',
+            subtitle: 'Thank You',
+            body: 'Your transaction order success',
+          });
+          console.log(test);
+        } catch (error) {
+          console.log(error);
+        }
         setLoading(false);
         setToastInfo({msg: 'Transaction Success', display: 'success'});
         setToast(true);
@@ -68,7 +81,7 @@ const Payment = () => {
     }
   };
 
-  const taxFee = cartRedux.delivery == 1 ? 10000 : 0;
+  const taxFee = cartRedux.delivery == 2 ? 10000 : 0;
   const grandTotal = route.params.subtotal + taxFee;
   return (
     <ScrollView>

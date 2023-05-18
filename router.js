@@ -235,6 +235,8 @@ const StackNavigator = () => {
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',
           },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
         }}
       />
       <Stack.Screen
@@ -246,6 +248,8 @@ const StackNavigator = () => {
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',
           },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
         }}
       />
       <Stack.Screen
@@ -254,9 +258,12 @@ const StackNavigator = () => {
         options={{
           title: 'All Products',
           headerShown: true,
+          headerShown: true,
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',
           },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
         }}
       />
       <Stack.Screen
@@ -268,6 +275,8 @@ const StackNavigator = () => {
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',
           },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
         }}
       />
       <Stack.Screen
@@ -279,6 +288,8 @@ const StackNavigator = () => {
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',
           },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
         }}
       />
       {/* <Stack.Screen
@@ -312,17 +323,33 @@ const StackNavigator = () => {
           headerStyle: {
             backgroundColor: 'rgba(255, 255, 255, 0)',
           },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
         }}
       />
       <Stack.Screen
         name="Delivery"
         component={Delivery}
-        options={{headerShown: true}}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
+        }}
       />
       <Stack.Screen
         name="Payment"
         component={Payment}
-        options={{headerShown: true}}
+        options={{
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+          },
+          headerTitleStyle: {fontFamily: 'Poppins-Bold'},
+          headerTitle: {backgroundColor: 'rgba(255, 255, 255, 0)'},
+        }}
       />
       <Stack.Screen name="Drawer" component={DrawerNavigator} />
       <Stack.Screen

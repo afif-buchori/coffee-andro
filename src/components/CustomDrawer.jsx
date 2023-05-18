@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {View, Image, Text, StyleSheet, Pressable} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -9,11 +9,30 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Logout from './Logout';
 
+import notifee, {AndroidImportance} from '@notifee/react-native';
+
 const CustomDrawer = props => {
   // const {width} = Dimensions.get('screen');
   const [showModal, setShowModal] = useState(false);
   const userRedux = useSelector(state => state.user);
   // console.log(userRedux.role);
+  const createChannelNotif = async () => {
+    try {
+      await notifee.requestPermission();
+      await notifee.createChannel({
+        id: 'urgent',
+        name: 'Hight Notification',
+        sound: 'default',
+        vibration: true,
+        importance: AndroidImportance.HIGH,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    createChannelNotif();
+  }, []);
   return (
     <DrawerContentScrollView {...props}>
       <Logout showModal={showModal} closeModal={() => setShowModal(false)} />
