@@ -75,3 +75,8 @@ export const authLogout = (token, controller) => {
     },
   });
 };
+
+export const loginFirebase = (body, controller) => {
+  const url = `${baseUrl}/auth/login-firebase`;
+  return axios.patch(url, body, {signal: controller.signal});
+};

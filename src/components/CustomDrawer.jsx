@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import {View, Image, Text, StyleSheet, Pressable} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -10,9 +10,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Logout from './Logout';
 
 import notifee, {AndroidImportance} from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
+import {loginFirebase} from '../utils/https/auth';
 
 const CustomDrawer = props => {
   // const {width} = Dimensions.get('screen');
+  const controller = useMemo(() => new AbortController(), []);
   const [showModal, setShowModal] = useState(false);
   const userRedux = useSelector(state => state.user);
   // console.log(userRedux.role);
@@ -30,8 +33,47 @@ const CustomDrawer = props => {
       console.log(error);
     }
   };
+
+  const backendNotif = async (title, body) => {
+    try {
+      const test = await notifee.displayNotification({
+        android: {channelId: 'urgent'},
+        title: title || 'Bukan Coffee',
+        // subtitle: 'Thank You',
+        body: body || 'Your transaction order success',
+      });
+      console.log(test);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onCreateTokenFCM = async () => {
+    try {
+      if (!messaging().isDeviceRegisteredForRemoteMessages)
+        await messaging().registerDeviceForRemoteMessages();
+      const tokenFCM = await messaging().getToken();
+      // console.log('FCM TOKEN', tokenFCM);
+      const form = {
+        token_fcm: tokenFCM,
+        user_id: userRedux.id,
+      };
+      console.log(form);
+      const resultFirebase = await loginFirebase(form, controller);
+      console.log(resultFirebase.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const onMessageReceived = async remoteMsg => {
+    console.log(('FCM PAYLOAD', remoteMsg));
+    backendNotif(remoteMsg.notification.title, remoteMsg.notification.body);
+  };
   useEffect(() => {
     createChannelNotif();
+    onCreateTokenFCM();
+    messaging().onMessage(onMessageReceived);
   }, []);
   return (
     <DrawerContentScrollView {...props}>
