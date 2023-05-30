@@ -1,7 +1,7 @@
 ## Readme Top
 
 <div align="center">
-<img width="50" src="./src/assets/icons/ico-logo.png" alt="logo">
+<img width="50" src="./src/assets/icons/icon-logo.png" alt="logo">
 <h3 align="center">Bukan Coffe Shop</h3>
 
   <p align="center">
