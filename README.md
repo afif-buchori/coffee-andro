@@ -108,7 +108,7 @@ SERVER_HOST = https://example.com
 
 Muchamad Afif Buchori - 4fifbuchori@gmail.com
 
-Project Link: [https://github.com/redhadefinto/coffe_shop_fe](https://github.com/redhadefinto/coffe_shop_fe)
+<!-- Project Link: [https://github.com/redhadefinto/coffe_shop_fe](https://github.com/redhadefinto/coffe_shop_fe) -->
 
 ## Documentation
 
