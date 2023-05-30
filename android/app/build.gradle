@@ -122,7 +122,7 @@ android {
             storeFile file(file("my-release-key.keystore"))
             storePassword "kuff"
             keyAlias "afif buchori"
-            keyPassword "kuff"
+            keyPassword "12345678"
         }
     }
     buildTypes {
